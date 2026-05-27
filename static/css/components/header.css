@@ -1,0 +1,98 @@
+/* ── Global Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+ul { list-style: none; }
+a  { text-decoration: none; color: inherit; }
+
+/* ── HEADER ── */
+body > header {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  display: flex;
+  flex-direction: row;        /* force horizontal */
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  border-bottom: 1px solid #777;
+  padding: 0 30px;
+  z-index: 9999;
+  color: #000;
+}
+
+body > header .header-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+body > header .menu-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #000;
+  line-height: 1;
+}
+body > header .menu-icon:hover  { opacity: 0.7; }
+body > header .menu-icon:active { opacity: 0.4; }
+
+body > header .logo-icon {
+  font-weight: bold;
+  font-style: italic;
+  font-size: 22px;
+  font-family: 'Arial Black', Arial, sans-serif;
+  white-space: nowrap;
+  color: #000;
+}
+body > header .logo-icon a { color: #000; }
+
+body > header .logo-icon img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  display: block;
+}
+
+body > header .header-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+body > header .nav-links > ul {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 20px;
+  list-style: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+body > header .nav-links > ul > li {
+  display: inline-flex;
+  align-items: center;
+}
+
+body > header .nav-links > ul > li > a {
+  color: #000;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 4px 6px;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+body > header .nav-links > ul > li > a:hover {
+  border-bottom-color: #000;
+}
+body > header .nav-links > ul > li > a:active {
+  opacity: 0.4;
+}

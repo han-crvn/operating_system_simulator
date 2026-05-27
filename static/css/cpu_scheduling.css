@@ -1,0 +1,411 @@
+/* ── CSS VARIABLES ── */
+:root {
+  --bg-color: #f4f4f4;
+  --text-color: #000;
+  --text: #000;
+  --muted: #222;
+  --border: #777;
+  --blue: #000;
+  --red: #000;
+  --header-h: 56px;
+  --panel-bg: #fff;
+  --card-bg: #fff;
+  --input-bg: #fff;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── PAGE LAYOUT ── */
+.page-wrapper {
+  margin-top: var(--header-h);
+  display: flex;
+  gap: 18px;
+  min-height: calc(100vh - var(--header-h));
+  padding: 24px 32px 28px;
+  background: #fff;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── LEFT PANEL ── */
+.left-panel {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-self: flex-start;
+}
+
+.page-title {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: .03em;
+    color: #000;
+    margin-bottom: 4px;
+}
+
+.algorithm-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+.algorithm-row select {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 9px;
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  font-size: 13px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.algorithm-row select option {
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+
+.quantum-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+.quantum-input {
+  width: 70px;
+  padding: 5px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  font-size: 13px;
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+
+/* Input Box */
+.input-box {
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  background: var(--card-bg);
+  padding: 12px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: none;
+}
+.input-box-header {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: var(--text-color);
+}
+.add-btn {
+  align-self: flex-start;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  background: var(--card-bg);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  margin-top: 4px;
+  transition: border-color .2s;
+}
+.add-btn:hover { background: #000; border-color: #000; color: #fff; }
+
+/* Process card in list */
+#process-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.process-grid {
+  display: grid;
+  grid-template-columns: 42px 58px 58px 18px;
+  align-items: center;
+  column-gap: 10px;
+}
+.process-grid.has-priority {
+  grid-template-columns: 42px 58px 58px 58px 18px;
+}
+.process-list-head {
+  font-size: 11px;
+  color: #000;
+  margin-bottom: 2px;
+}
+.process-list-head span {
+  white-space: nowrap;
+}
+.process-card {
+  font-size: 12px;
+}
+.process-badge {
+  width: 42px;
+  height: 28px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  font-size: 12px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.process-pill {
+  width: 42px;
+  height: 28px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.edit-btn {
+  font-size: 16px;
+  font-weight: 400;
+  color: #000;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 1;
+}
+.edit-btn:hover { text-decoration: underline; }
+
+/* Action buttons */
+.action-btns {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.btn-calculate {
+  padding: 10px 18px;
+  background: #fff;
+  color: #000;
+  border: 1.5px solid #777;
+  border-radius: 0;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-calculate:hover { background: #000; color: #fff; }
+.btn-reset {
+  padding: 10px 18px;
+  background: #fff;
+  color: #000;
+  border: 1.5px solid #777;
+  border-radius: 0;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-reset:hover { background: #000; color: #fff; }
+
+/* ── RIGHT PANEL ── */
+.right-panel {
+  flex: 1;
+  margin-left: 0;
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  padding: 24px;
+  min-height: 550px;
+  align-self: flex-start;
+}
+
+.placeholder-msg {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-color);
+  min-height: 400px;
+}
+
+.algo-title {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 16px;
+  color: var(--text-color);
+}
+
+/* Gantt */
+.gantt-section { margin-bottom: 16px; }
+.gantt-label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-color);
+}
+.gantt-chart {
+  display: flex;
+  height: 34px;
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  overflow: hidden;
+  width: 100%;
+}
+.gantt-block {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #000;
+  border-right: 1.5px solid #777;
+}
+.gantt-times {
+  display: flex;
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+  position: relative;
+}
+.gantt-time-mark {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+/* Table */
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+.result-table th {
+  border: 1.5px solid var(--border);
+  padding: 8px 10px;
+  font-weight: 700;
+  text-align: center;
+  background: var(--input-bg);
+  color: var(--text-color);
+}
+.result-table td {
+  border: 1.5px solid var(--border);
+  padding: 8px 10px;
+  text-align: center;
+  color: var(--text-color);
+}
+
+/* Averages */
+.averages-row {
+  display: flex;
+  gap: 12px;
+}
+.avg-box {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+  background: var(--input-bg);
+}
+.avg-box span { font-weight: 700; color: var(--text-color); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.modal {
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  padding: 16px 18px;
+  min-width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  position: absolute;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.modal-title { font-weight: 700; font-size: 16px; color: var(--text-color); }
+.modal-save-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #000;
+}
+.modal-delete-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #000;
+  margin-top: 8px;
+}
+.modal-fields {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+.round-input {
+  width: 72px;
+  padding: 6px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  font-size: 13px;
+  text-align: center;
+  outline: none;
+  background: var(--input-bg);
+  color: var(--text-color);
+}
+.round-input:focus {
+  border-color: #000;
+}

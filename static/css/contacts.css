@@ -1,0 +1,13 @@
+:root {
+  --bg-color: #f4f4f4;
+  --text-color: #000;
+  --text: #000;
+  --muted: #222;
+  --border: #777;
+  --blue: #000;
+  --red: #000;
+  --header-h: 56px;
+  --panel-bg: #fff;
+  --card-bg: #fff;
+  --input-bg: #fff;
+}
