@@ -102,6 +102,7 @@ modalSave.addEventListener('click', () => {
 
   closeModal();
   renderProcessList();
+  syncResultsAfterProcessChange();
 });
 
 /* ── Modal: delete ── */
@@ -111,6 +112,7 @@ modalDelete.addEventListener('click', () => {
   }
   closeModal();
   renderProcessList();
+  syncResultsAfterProcessChange();
 });
 
 /* ── Close modal on overlay click ── */
@@ -119,11 +121,49 @@ modalOverlay.addEventListener('click', e => {
 });
 
 /* ── Calculate ── */
-calcBtn.addEventListener('click', () => {
-  if (state.algorithm === 'none' || state.processes.length === 0) return;
-  const result = runAlgorithm();
-  renderResults(result);
+calcBtn.addEventListener('click', async () => {
+  await calculateSchedule();
 });
+
+async function calculateSchedule() {
+  if (state.algorithm === 'none' || state.processes.length === 0) {
+    showPlaceholder();
+    return;
+  }
+
+  try {
+    calcBtn.disabled = true;
+    const response = await fetch('/api/cpu_scheduling/calculate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        algorithm: state.algorithm,
+        quantum: parseInt(quantumInput.value, 10) || 2,
+        processes: state.processes,
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Unable to calculate schedule.');
+
+    renderResults(data);
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    calcBtn.disabled = false;
+  }
+}
+
+function syncResultsAfterProcessChange() {
+  if (state.processes.length === 0) {
+    showPlaceholder();
+    return;
+  }
+
+  if (resultsArea.style.display !== 'none') {
+    calculateSchedule();
+  }
+}
 
 /* ── Reset ── */
 resetBtn.addEventListener('click', () => {
@@ -132,176 +172,6 @@ resetBtn.addEventListener('click', () => {
   renderProcessList();
   showPlaceholder();
 });
-
-/* ══════════════════════════════════
-   ALGORITHMS
-   ══════════════════════════════════ */
-
-function runAlgorithm() {
-  const algo = state.algorithm;
-  const procs = state.processes.map(p => ({ ...p }));
-
-  if (algo === 'fcfs')         return fcfs(procs);
-  if (algo === 'sjf-non')      return sjfNonPre(procs);
-  if (algo === 'sjf-pre')      return sjfPre(procs);
-  if (algo === 'priority-non') return priorityNonPre(procs);
-  if (algo === 'priority-pre') return priorityPre(procs);
-  if (algo === 'rr')           return roundRobin(procs, parseInt(quantumInput.value) || 2);
-}
-
-/* FCFS */
-function fcfs(procs) {
-  procs.sort((a, b) => a.arrival - b.arrival || a.id - b.id);
-  let time = 0;
-  const gantt = [];
-  procs.forEach(p => {
-    if (time < p.arrival) time = p.arrival;
-    gantt.push({ name: `P${p.id}`, start: time, end: time + p.burst, id: p.id });
-    p.start = time;
-    p.finish = time + p.burst;
-    time = p.finish;
-  });
-  return buildResult(procs, gantt);
-}
-
-/* SJF Non-Preemptive */
-function sjfNonPre(procs) {
-  let time = 0, done = [], gantt = [];
-  const remaining = [...procs];
-  while (remaining.length) {
-    const available = remaining.filter(p => p.arrival <= time);
-    if (!available.length) { time = remaining[0].arrival; continue; }
-    available.sort((a, b) => a.burst - b.burst || a.arrival - b.arrival);
-    const p = available[0];
-    remaining.splice(remaining.indexOf(p), 1);
-    gantt.push({ name: `P${p.id}`, start: time, end: time + p.burst, id: p.id });
-    p.start = time;
-    p.finish = time + p.burst;
-    time = p.finish;
-    done.push(p);
-  }
-  return buildResult(done, gantt);
-}
-
-/* SJF Preemptive (SRTF) */
-function sjfPre(procs) {
-  const n = procs.length;
-  const rem = procs.map(p => ({ ...p, rem: p.burst, start: -1, finish: -1 }));
-  let time = 0, done = 0, gantt = [], lastId = -1;
-
-  while (done < n) {
-    const available = rem.filter(p => p.arrival <= time && p.rem > 0);
-    if (!available.length) { time++; continue; }
-    available.sort((a, b) => a.rem - b.rem || a.arrival - b.arrival);
-    const p = available[0];
-    if (p.start === -1) p.start = time;
-    if (lastId !== p.id) {
-      gantt.push({ name: `P${p.id}`, start: time, end: time + 1, id: p.id });
-    } else {
-      gantt[gantt.length - 1].end++;
-    }
-    p.rem--;
-    time++;
-    if (p.rem === 0) { p.finish = time; done++; }
-    lastId = p.id;
-  }
-  // Ensure all processes have finish time set
-  rem.forEach(p => { if (p.finish === -1) p.finish = time; });
-  return buildResult(rem, gantt);
-}
-
-/* Priority Non-Preemptive */
-function priorityNonPre(procs) {
-  let time = 0, done = [], gantt = [];
-  const remaining = [...procs];
-  while (remaining.length) {
-    const available = remaining.filter(p => p.arrival <= time);
-    if (!available.length) { time = remaining.sort((a,b)=>a.arrival-b.arrival)[0].arrival; continue; }
-    available.sort((a, b) => a.priority - b.priority || a.arrival - b.arrival);
-    const p = available[0];
-    remaining.splice(remaining.indexOf(p), 1);
-    gantt.push({ name: `P${p.id}`, start: time, end: time + p.burst, id: p.id });
-    p.start = time;
-    p.finish = time + p.burst;
-    time = p.finish;
-    done.push(p);
-  }
-  return buildResult(done, gantt, true);
-}
-
-/* Priority Preemptive */
-function priorityPre(procs) {
-  const n = procs.length;
-  const rem = procs.map(p => ({ ...p, rem: p.burst, start: -1, finish: -1 }));
-  let time = 0, done = 0, gantt = [], lastId = -1;
-
-  while (done < n) {
-    const available = rem.filter(p => p.arrival <= time && p.rem > 0);
-    if (!available.length) { time++; continue; }
-    available.sort((a, b) => a.priority - b.priority || a.arrival - b.arrival);
-    const p = available[0];
-    if (p.start === -1) p.start = time;
-    if (lastId !== p.id) {
-      gantt.push({ name: `P${p.id}`, start: time, end: time + 1, id: p.id });
-    } else {
-      gantt[gantt.length - 1].end++;
-    }
-    p.rem--;
-    time++;
-    if (p.rem === 0) { p.finish = time; done++; }
-    lastId = p.id;
-  }
-  // Ensure all processes have finish time set
-  rem.forEach(p => { if (p.finish === -1) p.finish = time; });
-  return buildResult(rem, gantt, true);
-}
-
-/* Round Robin */
-function roundRobin(procs, quantum) {
-  const n = procs.length;
-  const rem = procs.map(p => ({ ...p, rem: p.burst, start: -1, finish: -1 }));
-  rem.sort((a, b) => a.arrival - b.arrival);
-  let time = 0, gantt = [], queue = [], idx = 0, completed = 0;
-
-  // seed first batch
-  while (idx < n && rem[idx].arrival <= time) queue.push(rem[idx++]);
-
-  while (completed < n) {
-    if (queue.length === 0) {
-      time = Math.max(time, rem[idx].arrival);
-      while (idx < n && rem[idx].arrival <= time) queue.push(rem[idx++]);
-    }
-
-    const p = queue.shift();
-    if (p.start === -1) p.start = time;
-    const run = Math.min(p.rem, quantum);
-    gantt.push({ name: `P${p.id}`, start: time, end: time + run, id: p.id });
-    time += run;
-    p.rem -= run;
-
-    // enqueue newly arrived
-    while (idx < n && rem[idx].arrival <= time) queue.push(rem[idx++]);
-
-    if (p.rem > 0) queue.push(p);
-    else {
-      p.finish = time;
-      completed++;
-    }
-  }
-  return buildResult(rem, gantt);
-}
-
-/* Build result object */
-function buildResult(procs, gantt, hasPriority = false) {
-  const rows = procs.map(p => {
-    const tat = p.finish - p.arrival;
-    const wt  = tat - p.burst;
-    return { name: `P${p.id}`, arrival: p.arrival, burst: p.burst, tat, wt, priority: p.priority };
-  });
-  const avgWt  = rows.reduce((s, r) => s + r.wt, 0)  / rows.length;
-  const avgTat = rows.reduce((s, r) => s + r.tat, 0) / rows.length;
-  return { gantt, rows, avgWt, avgTat, hasPriority };
-}
 
 /* ══════════════════════════════════
    RENDER
@@ -322,12 +192,16 @@ function renderResults({ gantt, rows, avgWt: aw, avgTat: at, hasPriority }) {
   ganttTimes.innerHTML = '';
 
   gantt.forEach(block => {
-    if (colorMap[block.id] === undefined) colorMap[block.id] = GANTT_COLORS[colorIdx++ % GANTT_COLORS.length];
+    const isIdle = block.id === 'idle';
+    if (!isIdle && colorMap[block.id] === undefined) {
+      colorMap[block.id] = GANTT_COLORS[colorIdx++ % GANTT_COLORS.length];
+    }
     const pct = ((block.end - block.start) / totalTime) * 100;
     const div = document.createElement('div');
     div.className = 'gantt-block';
     div.style.width = pct + '%';
-    div.style.background = colorMap[block.id];
+    div.style.background = isIdle ? '#fff' : colorMap[block.id];
+    div.style.color = isIdle ? '#000' : '';
     div.textContent = block.name;
     ganttChart.appendChild(div);
   });
@@ -401,7 +275,7 @@ function renderProcessList() {
       <div class="process-pill">${p.arrival}</div>
       <div class="process-pill">${p.burst}</div>
       ${hasPri ? `<div class="process-pill">${p.priority}</div>` : ''}
-      <button class="edit-btn" data-id="${p.id}" title="Edit">-</button>
+      <button class="edit-btn" data-id="${p.id}" title="Edit">Edit</button>
     `;
     div.querySelector('.edit-btn').addEventListener('click', () => openModal(p.id));
     processList.appendChild(div);

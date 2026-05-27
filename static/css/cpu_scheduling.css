@@ -146,12 +146,12 @@ body {
 }
 .process-grid {
   display: grid;
-  grid-template-columns: 42px 58px 58px 18px;
+  grid-template-columns: 42px 58px 58px 32px;
   align-items: center;
   column-gap: 10px;
 }
 .process-grid.has-priority {
-  grid-template-columns: 42px 58px 58px 58px 18px;
+  grid-template-columns: 42px 58px 58px 58px 32px;
 }
 .process-list-head {
   font-size: 11px;
@@ -190,8 +190,8 @@ body {
   justify-content: center;
 }
 .edit-btn {
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 600;
   color: #000;
   cursor: pointer;
   background: none;
