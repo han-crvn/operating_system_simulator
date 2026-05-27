@@ -46,7 +46,7 @@ body > header .menu-icon:active { opacity: 0.4; }
 body > header .logo-icon {
   font-weight: bold;
   font-style: italic;
-  font-size: 22px;
+  font-size: 24px;
   font-family: 'Arial Black', Arial, sans-serif;
   white-space: nowrap;
   color: #000;
@@ -84,7 +84,7 @@ body > header .nav-links > ul > li {
 body > header .nav-links > ul > li > a {
   color: #000;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
   padding: 4px 6px;
   white-space: nowrap;
   border-bottom: 2px solid transparent;
