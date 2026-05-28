@@ -88,7 +88,6 @@ modalSave.addEventListener('click', () => {
   const priority = parseInt(mPriority.value) || 1;
 
   if (state.editingId === null) {
-    // new
     state.processes.push({
       id:       state.nextId++,
       arrival,
@@ -159,7 +158,6 @@ function syncResultsAfterProcessChange() {
     showPlaceholder();
     return;
   }
-
   if (resultsArea.style.display !== 'none') {
     calculateSchedule();
   }
@@ -179,7 +177,7 @@ resetBtn.addEventListener('click', () => {
 
 function renderResults({ gantt, rows, avgWt: aw, avgTat: at, hasPriority }) {
   placeholder.style.display = 'none';
-  resultsArea.style.display = 'block';
+  resultsArea.style.display = 'flex';
 
   algoTitle.textContent = ALGO_NAMES[state.algorithm] || '';
 
@@ -209,15 +207,26 @@ function renderResults({ gantt, rows, avgWt: aw, avgTat: at, hasPriority }) {
   /* Time markers */
   const marks = new Set();
   gantt.forEach(b => { marks.add(b.start); marks.add(b.end); });
-  [...marks].sort((a, b) => a - b).forEach(t => {
+  const sortedMarks = [...marks].sort((a, b) => a - b);
+  sortedMarks.forEach((t, i) => {
     const span = document.createElement('span');
     span.className = 'gantt-time-mark';
-    span.style.left = ((t / totalTime) * 100) + '%';
+    const pct = (t / totalTime) * 100;
+    // Clamp first mark to left edge, last mark to right edge
+    if (i === 0) {
+      span.style.left = '0%';
+      span.style.transform = 'translateX(0)';
+    } else if (i === sortedMarks.length - 1) {
+      span.style.left = '100%';
+      span.style.transform = 'translateX(-100%)';
+    } else {
+      span.style.left = pct + '%';
+    }
     span.textContent = t;
     ganttTimes.appendChild(span);
   });
   ganttTimes.style.position = 'relative';
-  ganttTimes.style.height = '16px';
+  ganttTimes.style.height = '18px';
 
   /* Table */
   if (hasPriority) {
@@ -254,31 +263,22 @@ function renderProcessList() {
   processList.innerHTML = '';
   const hasPri = NEEDS_PRIORITY.includes(state.algorithm);
 
-  if (state.processes.length > 0) {
-    const head = document.createElement('div');
-    head.className = `process-grid process-list-head${hasPri ? ' has-priority' : ''}`;
-    head.innerHTML = `
-      <span>Process</span>
-      <span>Arrival Time</span>
-      <span>Burst Time</span>
-      ${hasPri ? '<span>Priority</span>' : ''}
-      <span></span>
-    `;
-    processList.appendChild(head);
-  }
-
   state.processes.forEach(p => {
-    const div = document.createElement('div');
-    div.className = `process-card process-grid${hasPri ? ' has-priority' : ''}`;
-    div.innerHTML = `
-      <div class="process-badge">P${p.id}</div>
-      <div class="process-pill">${p.arrival}</div>
-      <div class="process-pill">${p.burst}</div>
-      ${hasPri ? `<div class="process-pill">${p.priority}</div>` : ''}
-      <button class="edit-btn" data-id="${p.id}" title="Edit">Edit</button>
+    const card = document.createElement('div');
+    card.className = 'process-card';
+    card.innerHTML = `
+      <div class="process-card-header">
+        <div class="process-badge">P${p.id}</div>
+        <button class="edit-btn" data-id="${p.id}">Edit</button>
+      </div>
+      <div class="process-card-info">
+        <span><b>Arrival Time:</b> ${p.arrival}</span>
+        <span><b>Burst Time:</b> ${p.burst}</span>
+        ${hasPri ? `<span><b>Priority:</b> ${p.priority}</span>` : ''}
+      </div>
     `;
-    div.querySelector('.edit-btn').addEventListener('click', () => openModal(p.id));
-    processList.appendChild(div);
+    card.querySelector('.edit-btn').addEventListener('click', () => openModal(p.id));
+    processList.appendChild(card);
   });
 }
 
@@ -289,13 +289,14 @@ function openModal(id) {
   mPriorityGrp.style.display = hasPri ? 'flex' : 'none';
 
   if (id === null) {
-    // new process
+    // new process — hide delete
     mProcess.value  = `P${state.nextId}`;
     mArrival.value  = 0;
     mBurst.value    = 1;
     mPriority.value = 1;
     modalDelete.style.display = 'none';
   } else {
+    // editing — show delete
     const p = state.processes.find(p => p.id === id);
     mProcess.value  = `P${p.id}`;
     mArrival.value  = p.arrival;
@@ -304,12 +305,34 @@ function openModal(id) {
     modalDelete.style.display = 'block';
   }
 
-  // position modal near the input box
-  const addRect = addBtn.getBoundingClientRect();
+  // Show modal first (hidden) so we can measure it
   modalOverlay.style.display = 'flex';
   const modal = modalOverlay.querySelector('.modal');
-  modal.style.top  = (addRect.bottom + window.scrollY + 8) + 'px';
-  modal.style.left = (addRect.left + window.scrollX) + 'px';
+  modal.style.top  = '-9999px';
+  modal.style.left = '-9999px';
+
+  // Use requestAnimationFrame so modal has rendered and has a measurable size
+  requestAnimationFrame(() => {
+    const leftPanel   = document.querySelector('.left-panel');
+    const panelRect   = leftPanel.getBoundingClientRect();
+    const modalW      = modal.offsetWidth;
+    const modalH      = modal.offsetHeight;
+    const viewportH   = window.innerHeight;
+    const viewportW   = window.innerWidth;
+
+    // Horizontal: align to left edge of panel, clamp within viewport
+    let left = panelRect.left + window.scrollX;
+    if (left + modalW > viewportW - 8) left = viewportW - modalW - 8;
+    if (left < 8) left = 8;
+
+    // Vertical: try to center within the viewport
+    let top = window.scrollY + (viewportH / 2) - (modalH / 2);
+    if (top + modalH > window.scrollY + viewportH - 8) top = window.scrollY + viewportH - modalH - 8;
+    if (top < window.scrollY + 8) top = window.scrollY + 8;
+
+    modal.style.top  = top + 'px';
+    modal.style.left = left + 'px';
+  });
 }
 
 function closeModal() {

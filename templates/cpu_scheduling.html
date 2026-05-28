@@ -15,74 +15,82 @@
         
             <!-- LEFT PANEL -->
             <div class="left-panel">
-            <h1 class="page-title">CPU SCHEDULING</h1>
-        
-            <div class="algorithm-row">
-                <label for="algorithm-select">Algorithm</label>
-                <select id="algorithm-select">
-                <option value="none">None</option>
-                <option value="fcfs">FCFS (First Come, First Serve)</option>
-                <option value="sjf-non">Shortest Job First (Non-Preemptive)</option>
-                <option value="sjf-pre">Shortest Job First (Preemptive)</option>
-                <option value="priority-non">Priority (Non-Preemptive)</option>
-                <option value="priority-pre">Priority (Preemptive)</option>
-                <option value="rr">Round Robin</option>
-                </select>
-            </div>
-        
-            <!-- Round Robin quantum input -->
-            <div class="quantum-row" id="quantum-row" style="display:none;">
-                <label for="quantum-input">Time Quantum</label>
-                <input type="number" id="quantum-input" min="1" value="2" class="quantum-input">
-            </div>
-        
-            <!-- Input list -->
-            <div class="input-box">
-                <div class="input-box-header">Input</div>
-                <div id="process-list"></div>
-                <button id="add-btn" class="add-btn" style="display:none;">&#43;</button>
-            </div>
-        
-            <div class="action-btns">
-                <button id="calc-btn" class="btn-calculate">Calculate</button>
-                <button id="reset-btn" class="btn-reset">Reset</button>
-            </div>
+                <h1 class="page-title">CPU SCHEDULING</h1>
+            
+                <div class="algorithm-row">
+                    <label for="algorithm-select">Algorithm</label>
+                    <select id="algorithm-select">
+                        <option value="none">None</option>
+                        <option value="fcfs">FCFS (First Come, First Serve)</option>
+                        <option value="sjf-non">Shortest Job First (Non-Preemptive)</option>
+                        <option value="sjf-pre">Shortest Job First (Preemptive)</option>
+                        <option value="priority-non">Priority (Non-Preemptive)</option>
+                        <option value="priority-pre">Priority (Preemptive)</option>
+                        <option value="rr">Round Robin</option>
+                    </select>
+                </div>
+            
+                <!-- Round Robin quantum input -->
+                <div class="quantum-row" id="quantum-row" style="display:none;">
+                    <label for="quantum-input">Time Quantum</label>
+                    <input type="number" id="quantum-input" min="1" value="2" class="quantum-input">
+                </div>
+            
+                <!-- Input list -->
+                <div class="input-box">
+
+                    <!-- Top content: header, process list, add button -->
+                    <div class="input-box-content">
+                        <div class="input-box-header">Input</div>
+                        <div id="process-list"></div>
+                        <button id="add-btn" class="add-btn" style="display:none;">&#43;</button>
+                    </div>
+
+                    <!-- Bottom: action buttons always anchored to bottom -->
+                    <div class="action-btns">
+                        <button id="calc-btn" class="btn-calculate">Calculate</button>
+                    </div>
+
+                </div>
+            
             </div>
         
             <!-- RIGHT PANEL -->
             <div class="right-panel" id="right-panel">
-            <div id="placeholder-msg" class="placeholder-msg">
-                <strong>Select a CPU scheduling type.</strong>
-            </div>
-        
-            <div id="results-area" style="display:none;">
-                <h2 id="algo-title" class="algo-title"></h2>
-        
-                <div class="gantt-section">
-                <div class="gantt-label">Gantt Chart</div>
-                <div id="gantt-chart" class="gantt-chart"></div>
-                <div id="gantt-times" class="gantt-times"></div>
+                <div id="placeholder-msg" class="placeholder-msg">
+                    <strong>Select a CPU scheduling type.</strong>
                 </div>
-        
-                <table class="result-table" id="result-table">
-                <thead>
-                    <tr>
-                    <th>Process</th>
-                    <th>Arrival Time</th>
-                    <th>Burst Time</th>
-                    <th id="extra-col-head" style="display:none;"></th>
-                    <th>Turnaround Time</th>
-                    <th>Waiting Time</th>
-                    </tr>
-                </thead>
-                <tbody id="result-body"></tbody>
-                </table>
-        
-                <div class="averages-row">
-                <div class="avg-box">Average Waiting Time: <span id="avg-wt"></span></div>
-                <div class="avg-box">Average Turnaround Time: <span id="avg-tat"></span></div>
+            
+                <div id="results-area" style="display:none;">
+                    <h2 id="algo-title" class="algo-title"></h2>
+            
+                    <div class="gantt-section">
+                        <div class="gantt-label">Gantt Chart</div>
+                        <div id="gantt-chart" class="gantt-chart"></div>
+                        <div id="gantt-times" class="gantt-times"></div>
+                    </div>
+            
+                    <div class="table-scroll-wrapper">
+                        <table class="result-table" id="result-table">
+                            <thead>
+                                <tr>
+                                    <th>Process</th>
+                                    <th>Arrival Time</th>
+                                    <th>Burst Time</th>
+                                    <th id="extra-col-head" style="display:none;"></th>
+                                    <th>Turnaround Time</th>
+                                    <th>Waiting Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="result-body"></tbody>
+                        </table>
+                    </div>
+            
+                    <div class="averages-row">
+                        <div class="avg-box">Average Waiting Time: <span id="avg-wt"></span></div>
+                        <div class="avg-box">Average Turnaround Time: <span id="avg-tat"></span></div>
+                    </div>
                 </div>
-            </div>
             </div>
         
         </main>
@@ -90,29 +98,38 @@
         <!-- ADD PROCESS MODAL -->
         <div id="modal-overlay" class="modal-overlay" style="display:none;">
             <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title">Input</span>
-                <button id="modal-save" class="modal-save-btn" title="Save">&#128190;</button>
-            </div>
-            <div class="modal-fields">
-                <div class="field-group">
-                <label>Process</label>
-                <input type="text" id="m-process" class="round-input" readonly>
+                <div class="modal-inner">
+
+                    <!-- Left: title + fields -->
+                    <div class="modal-left">
+                        <span class="modal-title">Input</span>
+                        <div class="modal-fields">
+                            <div class="field-group">
+                                <label>Process</label>
+                                <input type="text" id="m-process" class="round-input" readonly>
+                            </div>
+                            <div class="field-group">
+                                <label>Arrival Time</label>
+                                <input type="number" id="m-arrival" class="round-input" min="0" value="0">
+                            </div>
+                            <div class="field-group">
+                                <label>Burst Time</label>
+                                <input type="number" id="m-burst" class="round-input" min="1" value="1">
+                            </div>
+                            <div class="field-group" id="m-priority-group" style="display:none;">
+                                <label>Priority</label>
+                                <input type="number" id="m-priority" class="round-input" min="1" value="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: save (top) + delete (bottom) -->
+                    <div class="modal-right">
+                        <button id="modal-save" class="modal-save-btn" title="Save">&#128190;</button>
+                        <button id="modal-delete" class="modal-delete-btn" title="Delete">&#128465;</button>
+                    </div>
+
                 </div>
-                <div class="field-group">
-                <label>Arrival Time</label>
-                <input type="number" id="m-arrival" class="round-input" min="0" value="0">
-                </div>
-                <div class="field-group">
-                <label>Burst Time</label>
-                <input type="number" id="m-burst" class="round-input" min="1" value="1">
-                </div>
-                <div class="field-group" id="m-priority-group" style="display:none;">
-                <label>Priority</label>
-                <input type="number" id="m-priority" class="round-input" min="1" value="1">
-                </div>
-                <button id="modal-delete" class="modal-delete-btn" title="Delete">&#128465;</button>
-            </div>
             </div>
         </div>
         
