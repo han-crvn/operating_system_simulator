@@ -6,27 +6,38 @@
         <title>OS Simulator</title>
         <link rel="stylesheet" href="{{url_for('static', filename='css/components/header.css')}}">
         <link rel="stylesheet" href="{{url_for('static', filename='css/homepage.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/contacts.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/projects.css') }}">
     </head>
     <body>
         {% include 'components/header.html' %}
 
-        <div class="container">
-            <div class="modules-grid">
-                <div class="card">
-                    <h3>CPU Scheduling</h3>
-                    <p><a href="/cpu_scheduling">CPU Scheduling</a></p>
-                </div>
-                
-                <div class="card">
-                    <h3>Memory Management</h3>
-                    <p>Simulate memory allocation policies, paging, tracking systems, and fragmentation mechanisms.</p>
-                </div>
+        <!-- HERO SECTION -->
+        <section class="hero">
 
-                <div class="card">
-                    <h3>File System Simulator</h3>
-                    <p>Understand file allocation strategies, directory structures, and storage tracking techniques.</p>
-                </div>
+            <div class="hero-content">
+                <h1>CLOCKED</h1>
+
+                <p>
+                    An interactive gateway to understanding the core concepts
+                    of Operating Systems. Our platform is designed to simplify
+                    complex topics through clear explanations, visual simulations,
+                    and user-friendly tools that make learning both engaging and
+                    effective.
+                </p>
+
+                <a href="#projects-section" class="learn-btn">
+                    Learn More →
+                </a>
             </div>
-        </div>
+
+        </section>
+
+        <!-- PROJECTS SECTION -->
+        {% include 'projects.html' %}
+
+        <!-- CONTACT SECTION -->
+        {% include 'contacts.html' %}
+
     </body>
 </html>

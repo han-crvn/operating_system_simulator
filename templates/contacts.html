@@ -1,14 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>OS Simulator</title>
-        <link rel="stylesheet" href="{{url_for('static', filename='css/components/header.css')}}">
-        <link rel="stylesheet" href="{{url_for('static', filename='css/cpu_scheduling.css')}}">
-    </head>
-    <body>
-        {% include 'components/header.html' %}
+<section id="contacts-section" class="contacts">
 
-    </body>
-</html>
+    <div class="contact-left">
+
+        <h2>
+            Let's chat.
+        </h2>
+        <h3>
+            Tell us about your Questions.
+        </h3>
+
+    </div>
+
+    <div class="contact-right">
+
+        <form class="contact-form">
+
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" placeholder="Your name">
+            </div>
+
+            <div class="input-group">
+                <label>Subject</label>
+                <input type="text" placeholder="Subject">
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="your@email.com">
+            </div>
+
+            <div class="input-group">
+                <label>Message</label>
+                <textarea rows="6" placeholder="Write your message..."></textarea>
+            </div>
+
+            <button type="submit">
+                Send Message
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
