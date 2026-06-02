@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>OS Simulator</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='css/components/header.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/memory_management.css')}}">
+
+        <!--Font Awesome-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    </head>
+    <body>
+        {% include 'components/header.html' %}
+
+        <!-- MAIN -->
+        <main class="page-wrapper">
+
+            <!-- LEFT PANEL -->
+            <div class="left-panel">
+                <h1 class="page-title">MEMORY<br></h1>
+                <h1 class="page-title-a">MANAGEMENT</h1>
+
+                <div class="algorithm-row">
+                    <label for="algorithm-select">Algorithm</label>
+                    <select id="algorithm-select">
+                        <option value="none">None</option>
+                        <option value="fifo">FIFO (First In, First Out)</option>
+                        <option value="opt">Optimal Page Replacement</option>
+                        <option value="lru">LRU (Least Recently Used)</option>
+                        <option value="lru-approx">LRU Approximation</option>
+                        <option value="lfu">Counting-Based: LFU</option>
+                        <option value="mfu">Counting-Based: MFU</option>
+                    </select>
+                </div>
+
+                <!-- Input box -->
+                <div class="input-box">
+                    
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="right-panel" id="right-panel">
+
+                <div id="placeholder-msg" class="placeholder-msg">
+                        <h1 class="epic-title">
+                            Select a <span class="gradient-text">memory management<br>scheduling</span> type.
+                        </h1>
+                </div>
+
+            </div>
+
+        </main>
+
+        <script type="module" src="{{ url_for('static', filename='javascript/memory_management.js') }}"></script>
+
+    </body>
+</html>

@@ -10,9 +10,17 @@ def index():
 def cpu_scheduling():
     return render_template('cpu_scheduling.html')
 
+@main_bp.route('/memory_management')
+def memory_management():
+    return render_template('memory_management.html')
+
 @main_bp.route('/virtual_memory')
 def virtual_memory():
     return render_template('virtual_memory.html')
+
+@main_bp.route('/disk_scheduling')
+def disk_scheduling():
+    return render_template('disk_scheduling.html')
 
 @main_bp.route('/contacts')
 def contacts():
