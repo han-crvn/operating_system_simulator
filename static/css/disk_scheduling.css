@@ -1,0 +1,464 @@
+/* =========================
+   CSS VARIABLES
+========================= */
+
+:root {
+    --bg-color: #f4f4f4;
+    --text-color: #000;
+    --text: #000;
+    --muted: #222;
+    --border: #777;
+    --blue: #1565c0;
+    --red: #e53935;
+    --green: #2e7d32;
+    --header-h: 56px;
+    --panel-bg: #fff;
+    --card-bg: #fff;
+    --input-bg: #fff;
+}
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* =========================
+   PAGE LAYOUT
+========================= */
+
+.page-wrapper {
+    margin-top: var(--header-h);
+
+    display: flex;
+    gap: 18px;
+
+    height: calc(100vh - var(--header-h));
+
+    padding: 28px 32px;
+
+    background: #fff;
+
+    align-items: stretch;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+}
+
+/* =========================
+   LEFT PANEL
+========================= */
+
+.left-panel {
+    width: 300px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+
+    overflow: hidden;
+}
+
+.page-title {
+    font-family: 'Arial Black', Arial, sans-serif;
+
+    font-size: 28px;
+    font-weight: 900;
+
+    text-align: center;
+
+    line-height: 1.1;
+}
+
+/* =========================
+   ALGORITHM
+========================= */
+
+.algorithm-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.algorithm-row select {
+    flex: 1;
+
+    padding: 8px 10px;
+
+    border: 1.5px solid var(--border);
+
+    background: white;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+/* =========================
+   INPUT BOX
+========================= */
+
+.input-box {
+    flex: 1;
+
+    border: 1.5px solid var(--border);
+
+    background: white;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+.input-box h2 {
+    font-size: 1.8rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+
+    padding: 12px 15px;
+
+    border: 1.5px solid var(--border);
+
+    border-radius: 30px;
+
+    font-size: 14px;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--blue);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.button-group {
+    margin-top: auto;
+
+    display: flex;
+    gap: 10px;
+}
+
+.button-group button {
+    flex: 1;
+
+    padding: 12px;
+
+    border: 1.5px solid var(--border);
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+#simulate-btn {
+    background: var(--blue);
+    color: white;
+}
+
+#simulate-btn:hover {
+    background: #0d57ac;
+}
+
+#reset-btn {
+    background: white;
+}
+
+#reset-btn:hover {
+    background: #f0f0f0;
+}
+
+/* =========================
+   RIGHT PANEL
+========================= */
+
+.right-panel {
+    flex: 1;
+    margin-left: 0;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 0;
+    padding: 24px 24px 16px 24px;
+    min-height: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* =========================
+   DEFAULT STATE
+========================= */
+
+.placeholder-msg {
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.epic-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+}
+
+.gradient-text {
+    background: linear-gradient(
+        to right,
+        #6366f1,
+        #3b82f6,
+        #06b6d4
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* =========================
+   RESULT STATE
+========================= */
+
+#result-state {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+    min-height: 0;
+}
+
+.result-header {
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.result-header h2 {
+    font-size: 2rem;
+}
+
+.result-header p {
+    margin-top: 5px;
+    color: #555;
+}
+
+/* =========================
+   RESULT CONTENT
+========================= */
+
+.result-content {
+    flex: 1;
+
+    display: flex;
+
+    gap: 15px;
+
+    min-height: 0;
+}
+
+/* =========================
+   TIMELINE
+========================= */
+
+.timeline-section {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    min-height: 0;
+}
+
+.section-header {
+    background: #d9d9d9;
+
+    border: 1px solid var(--border);
+
+    padding: 10px;
+
+    text-align: center;
+
+    font-weight: 700;
+
+    flex-shrink: 0;
+}
+
+#timeline-container {
+    flex: 1;
+
+    border: 1px solid var(--border);
+    border-top: none;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #fafafa;
+
+    overflow: auto;
+    min-height: 0;
+}
+
+#timeline-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+.timeline-placeholder {
+    color: #777;
+    text-align: center;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.result-sidebar {
+    width: 260px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+
+    min-height: 0;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+
+    border: 1px solid var(--border);
+}
+
+.result-sidebar table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.result-sidebar th,
+.result-sidebar td {
+    border: 1px solid var(--border);
+
+    padding: 10px;
+
+    text-align: center;
+}
+
+.result-sidebar th {
+    background: #d9d9d9;
+
+    position: sticky;
+    top: 0;
+}
+
+/* =========================
+   TOTAL SEEK
+========================= */
+
+.total-seek-box {
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+#total-seek {
+    padding: 25px;
+
+    text-align: center;
+
+    font-size: 1.4rem;
+    font-weight: 700;
+
+    color: var(--blue);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+
+    .page-wrapper {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left-panel {
+        width: 100%;
+    }
+
+    .result-content {
+        flex-direction: column;
+    }
+
+    .result-sidebar {
+        width: 100%;
+    }
+
+    .table-wrapper {
+        max-height: 250px;
+    }
+}
+
+/* =========================
+   NO-SERVICE TABLE STYLING
+========================= */
+
+.row-no-service td {
+    color: #888;
+    font-style: italic;
+}
+
+.no-service-tag {
+    font-size: 11px;
+    color: #999;
+}

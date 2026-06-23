@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>OS Simulator</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='css/components/header.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/virtual_memory.css')}}">
+
+        <!--Font Awesome-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    </head>
+    <body>
+        {% include 'components/header.html' %}
+
+        <!-- MAIN -->
+        <main class="page-wrapper">
+
+            <!-- LEFT PANEL -->
+            <div class="left-panel">
+                <h1 class="page-title">VIRTUAL MEMORY<br></h1>
+                <h1 class="page-title-a">MANAGEMENT</h1>
+
+                <div class="algorithm-row">
+                    <label for="algorithm-select">Algorithm</label>
+                    <select id="algorithm-select">
+                        <option value="none">None</option>
+                        <option value="fifo">FIFO (First In, First Out)</option>
+                        <option value="opt">Optimal Page Replacement</option>
+                        <option value="lru">LRU (Least Recently Used)</option>
+                        <option value="lru-approx">LRU Approximation</option>
+                        <option value="lfu">Counting-Based: LFU</option>
+                        <option value="mfu">Counting-Based: MFU</option>
+                    </select>
+                </div>
+
+                <!-- Input box -->
+                <div class="input-box">
+                    <div class="input-box-content">
+                        <div class="input-box-header">Input</div>
+
+                        <div class="field-row">
+                            <label class="field-label">Reference String</label>
+                            <input
+                                type="text"
+                                id="reference-string"
+                                class="field-input"
+                                placeholder="Example: 7,0,1,2,0,3,4"
+                            >
+                        </div>
+
+                        <div class="field-row">
+                            <label class="field-label">Number of Frames</label>
+                            <input
+                                type="number"
+                                id="num-frames"
+                                class="field-input"
+                                placeholder="Example: 3"
+                                min="1"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Action buttons anchored to bottom -->
+                    <div class="action-btns">
+                        <button id="simulate-btn" class="btn-calculate">Simulate</button>
+                        <button id="reset-btn" class="btn-reset">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="right-panel" id="right-panel">
+
+                <!-- Placeholder -->
+                <div id="placeholder-msg" class="placeholder-msg">
+                    <h1 class="epic-title">
+                        Select a <span class="gradient-text">virtual memory<br>management</span> type.
+                    </h1>
+                </div>
+
+                <!-- Results -->
+                <div id="results-area" style="display:none;">
+                    <div class="results-header">
+                        <h2 class="algo-title">Simulation Result</h2>
+                        <p class="algo-subtitle">Results showing how <span id="algo-name-inline">the algorithm</span> manages and replaces memory pages.</p>
+                    </div>
+
+                    <div class="results-body">
+
+                        <!-- Left: table -->
+                        <div class="table-section">
+                            <div class="table-scroll-wrapper">
+                                <table class="result-table" id="result-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Step</th>
+                                            <th>Reference</th>
+                                            <th>Frames</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="result-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Right: stat cards + algo info -->
+                        <div class="stats-section">
+
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fa-regular fa-file-lines"></i></div>
+                                <div class="stat-text">
+                                    <div class="stat-label">Page Faults</div>
+                                    <div class="stat-value" id="stat-faults">0</div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fa-solid fa-bullseye"></i></div>
+                                <div class="stat-text">
+                                    <div class="stat-label">Page Hits</div>
+                                    <div class="stat-value" id="stat-hits">0</div>
+                                </div>
+                            </div>
+
+                            <div class="algo-info-box">
+                                <div class="algo-info-title">Algorithm Information</div>
+                                <div class="algo-info-text" id="algo-info-text"></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+        <script type="module" src="{{ url_for('static', filename='javascript/virtual_memory.js') }}"></script>
+
+    </body>
+</html>

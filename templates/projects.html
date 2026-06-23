@@ -1,0 +1,163 @@
+<section id="projects-section" class="projects">
+
+    <div class="projects-header">
+
+        <h2>
+            Core
+            <span class="os-text">Operating System</span>
+            Concepts
+        </h2>
+
+        <p>
+            At CLOCKED, we combine technology and education into one streamlined
+            experience — helping students, developers, and tech enthusiasts
+            visualize how operating systems work behind the scenes.
+        </p>
+
+    </div>
+
+    <div class="card-container">
+
+        <!-- CPU Scheduling -->
+        <div class="simulator-card"
+             onclick="window.location.href='/cpu_scheduling'">
+
+            <img
+                src="{{ url_for('static', filename='images/cpu_scheduling_img.png') }}"
+                alt="CPU Scheduling">
+
+            <div class="card-content">
+
+                <h3>CPU Scheduling</h3>
+
+                <p>
+                    Simulates how operating systems manage processes using FCFS,
+                    SJF, Priority, and Round Robin scheduling algorithms.
+                </p>
+
+                <h4>Features</h4>
+
+                <ul>
+                    <li>Multiple scheduling algorithms</li>
+                    <li>Process input and editing</li>
+                    <li>Gantt Chart visualization</li>
+                    <li>Waiting and turnaround time calculation</li>
+                    <li>Simple interactive interface</li>
+                </ul>
+
+                <a href="/cpu_scheduling" class="try-btn">
+                    Try simulator →
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- Memory Management -->
+        <div class="simulator-card"
+             onclick="window.location.href='/memory_management'">
+
+            <img
+                src="{{ url_for('static', filename='images/memory_management_img.png') }}"
+                alt="Memory Management">
+
+            <div class="card-content">
+
+                <h3>Memory Management</h3>
+
+                <p>
+                    Visualizes memory allocation and management
+                    techniques used by operating systems.
+                </p>
+
+                <h4>Features</h4>
+
+                <ul>
+                    <li>Memory allocation simulation</li>
+                    <li>Process and memory block management</li>
+                    <li>Real-time memory visualization</li>
+                    <li>Simple interactive interface</li>
+                    <li>Efficient memory tracking</li>
+                </ul>
+
+                <a href="/memory_management" class="try-btn">
+                    Try simulator →
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- Virtual Memory -->
+        <div class="simulator-card"
+             onclick="window.location.href='/virtual_memory'">
+
+            <img
+                src="{{ url_for('static', filename='images/virtual_memory_img.png') }}"
+                alt="Virtual Memory">
+
+            <div class="card-content">
+
+                <h3>Virtual Memory</h3>
+
+                <p>
+                    Demonstrates paging, fragmentation, and
+                    virtual memory management concepts.
+                </p>
+
+                <h4>Features</h4>
+
+                <ul>
+                    <li>Compaction and non-compaction simulation</li>
+                    <li>Memory fragmentation visualization</li>
+                    <li>Dynamic memory allocation</li>
+                    <li>Real-time process handling</li>
+                    <li>Simple interactive interface</li>
+                </ul>
+
+                <a href="/virtual_memory" class="try-btn">
+                    Try simulator →
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- Disk Scheduling -->
+        <div class="simulator-card"
+             onclick="window.location.href='/disk_scheduling'">
+
+            <img
+                src="{{ url_for('static', filename='images/disk_scheduling_img.png') }}"
+                alt="Disk Scheduling">
+
+            <div class="card-content">
+
+                <h3>Disk Scheduling</h3>
+
+                <p>
+                    Simulates disk access scheduling algorithms
+                    and seek time optimization techniques.
+                </p>
+
+                <h4>Features</h4>
+
+                <ul>
+                    <li>Multiple disk scheduling algorithms</li>
+                    <li>Disk request visualization</li>
+                    <li>Seek time calculation</li>
+                    <li>Real-time scheduling simulation</li>
+                    <li>Simple interactive interface</li>
+                </ul>
+
+                <a href="/disk_scheduling" class="try-btn">
+                    Try simulator →
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

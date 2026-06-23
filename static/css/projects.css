@@ -1,0 +1,167 @@
+/* PROJECTS SECTION */
+
+.projects {
+    padding: 100px 5%;
+    background: #ffffff;
+}
+
+/* HEADER */
+
+.projects-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.projects-header h2 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #000;
+}
+
+.os-text {
+    background: linear-gradient(
+        90deg,
+        #7b61ff,
+        #4da6ff
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.projects-header p {
+    max-width: 900px;
+    margin: 20px auto 0;
+
+    color: #444;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+/* CARDS */
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.simulator-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+    display: flex;
+    flex-direction: column;
+}
+.simulator-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.simulator-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+/* CONTENT */
+
+.card-content {
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+}
+
+/* CARD TITLE */
+
+.card-content h3 {
+    font-size: 1.8rem;
+
+    margin: 0 0 10px 0;
+
+    /* all titles start and end at same height */
+    min-height: 60px;
+}
+
+/* DESCRIPTION */
+
+.card-content p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #333;
+
+    margin-bottom: 15px;
+}
+
+/* FEATURES TITLE */
+
+.card-content h4 {
+    color: #2563eb;
+
+    margin-top: auto;
+    margin-bottom: 10px;
+
+    /* aligns all "Features" headings */
+    min-height: 25px;
+}
+
+/* FEATURE LIST */
+
+.card-content ul {
+    padding-left: 20px;
+
+    min-height: 120px;
+}
+
+.card-content li {
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+/* BUTTON */
+
+.try-btn {
+    display: inline-block;
+
+    margin-top: auto;
+
+    text-decoration: none;
+    font-weight: 700;
+
+    color: #ff4b4b;
+}
+.try-btn:hover {
+    color: #e11d48;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+
+    .card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .card-container {
+        grid-template-columns: 1fr;
+    }
+
+    .projects-header h2 {
+        font-size: 2.2rem;
+    }
+
+}

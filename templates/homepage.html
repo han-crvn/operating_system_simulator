@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OS Simulator</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/homepage.css')}}">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>OS Simulator</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='css/components/header.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/homepage.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/contacts.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/projects.css') }}">
+    </head>
+    <body>
+        {% include 'components/header.html' %}
 
-    <header>
-        <h1>Operating System Simulator</h1>
-        <p>Explore and visualize core OS management algorithms</p>
-    </header>
+        <!-- HERO SECTION -->
+        <section class="hero">
 
-    <div class="container">
-        <div class="modules-grid">
-            <div class="card">
-                <h3>Process Scheduling</h3>
-                <p>Visualize CPU scheduling algorithms like FCFS, Shortest Job First, and Round Robin.</p>
+            <div class="hero-content">
+                <h1>CLOCKED</h1>
+
+                <p>
+                    An interactive gateway to understanding the core concepts
+                    of Operating Systems. Our platform is designed to simplify
+                    complex topics through clear explanations, visual simulations,
+                    and user-friendly tools that make learning both engaging and
+                    effective.
+                </p>
+
+                <a href="#projects-section" class="learn-btn">
+                    Learn More →
+                </a>
             </div>
-            
-            <div class="card">
-                <h3>Memory Management</h3>
-                <p>Simulate memory allocation policies, paging, tracking systems, and fragmentation mechanisms.</p>
-            </div>
 
-            <div class="card">
-                <h3>File System Simulator</h3>
-                <p>Understand file allocation strategies, directory structures, and storage tracking techniques.</p>
-            </div>
-        </div>
-    </div>
+        </section>
 
-</body>
+        <!-- PROJECTS SECTION -->
+        {% include 'projects.html' %}
+
+        <!-- CONTACT SECTION -->
+        {% include 'contacts.html' %}
+
+    </body>
 </html>

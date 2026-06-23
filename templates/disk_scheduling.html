@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disk Scheduling Simulator</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/components/header.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/disk_scheduling.css') }}">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+
+<body>
+
+    {% include 'components/header.html' %}
+
+    <main class="page-wrapper">
+
+        <div class="left-panel">
+
+            <h1 class="page-title">
+                DISK SCHEDULING
+            </h1>
+
+            <!-- Algorithm Selection -->
+
+            <div class="algorithm-row">
+
+                <label for="algorithm-select">
+                    Algorithm
+                </label>
+
+                <select id="algorithm-select">
+
+                    <option value="">
+                        None
+                    </option>
+
+                    <option value="FCFS">
+                        FCFS
+                    </option>
+
+                    <option value="SSTF">
+                        SSTF
+                    </option>
+
+                    <option value="SCAN">
+                        SCAN
+                    </option>
+
+                    <option value="CSCAN">
+                        C-SCAN
+                    </option>
+
+                    <option value="LOOK">
+                        LOOK
+                    </option>
+
+                    <option value="CLOOK">
+                        C-LOOK
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- Input Box -->
+
+            <div class="input-box">
+
+                <h2>Input</h2>
+
+                <div class="input-group">
+
+                    <label>
+                        Request Queue
+                    </label>
+
+                    <input
+                        type="text"
+                        id="request-queue"
+                        placeholder="98, 183, 37, 122, 14, 124, 65, 67">
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Initial Head Position
+                    </label>
+
+                    <input
+                        type="number"
+                        id="head-position"
+                        placeholder="53">
+
+                </div>
+
+                <div class="button-group">
+
+                    <button id="simulate-btn">
+                        Simulate
+                    </button>
+
+                    <button id="reset-btn">
+                        Reset
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ==================================
+             RIGHT PANEL
+        =================================== -->
+
+        <div class="right-panel" id="right-panel">
+
+            <!-- DEFAULT STATE -->
+
+            <div id="placeholder-msg" class="placeholder-msg">
+
+                <h1 class="epic-title">
+                    Select a
+                    <span class="gradient-text">
+                        disk scheduling
+                    </span>
+                    type.
+                </h1>
+
+            </div>
+
+            <!-- RESULT STATE -->
+
+            <div id="result-state" style="display:none;">
+
+                <!-- Header -->
+
+                <div class="result-header">
+
+                    <h2>
+                        Simulation Result
+                    </h2>
+
+                    <p id="result-description">
+                        Results showing selected disk scheduling algorithm.
+                    </p>
+
+                </div>
+
+                <!-- Main Content -->
+
+                <div class="result-content">
+
+                    <!-- Timeline Area -->
+
+                    <div class="timeline-section">
+
+                        <div class="section-header">
+                            Head Movement Timeline
+                        </div>
+
+                        <div id="timeline-container">
+
+                            <div class="timeline-placeholder">
+
+                                Timeline Visualization Here
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Right Side -->
+
+                    <div class="result-sidebar">
+
+                        <div class="table-wrapper">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Distance</th>
+                                        <th>Seek Time</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="result-table-body">
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <div class="total-seek-box">
+
+                            <div class="section-header">
+                                Total Seek Time
+                            </div>
+
+                            <div id="total-seek">
+                                0 Tracks
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <script type="module"
+            src="{{ url_for('static', filename='javascript/disk_scheduling.js') }}">
+    </script>
+
+</body>
+</html>

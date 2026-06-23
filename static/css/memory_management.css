@@ -1,0 +1,151 @@
+/* ── CSS VARIABLES ── */
+:root {
+    --bg-color: #f4f4f4;
+    --text-color: #000;
+    --text: #000;
+    --muted: #222;
+    --border: #777;
+    --blue: #1565c0;
+    --red: #e53935;
+    --green: #2e7d32;
+    --header-h: 56px;
+    --panel-bg: #fff;
+    --card-bg: #fff;
+    --input-bg: #fff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ── PAGE LAYOUT ── */
+.page-wrapper {
+    margin-top: var(--header-h);
+    display: flex;
+    gap: 18px;
+    height: calc(100vh - var(--header-h));
+    padding: 28px 32px;
+    background: #fff;
+    align-items: stretch;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* ── LEFT PANEL ── */
+.left-panel {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.page-title {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    text-align: left;
+    letter-spacing: .03em;
+    color: #000;
+}
+
+.page-title-a {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 900;
+    text-align: left;
+    letter-spacing: .03em;
+    color: #000;
+    margin-top: -36px;
+    margin-bottom: 0px;
+}
+
+.algorithm-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.algorithm-row select {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 9px;
+    border: 1.5px solid var(--border);
+    border-radius: 0;
+    font-size: 13px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.algorithm-row select option {
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* ── INPUT BOX ── */
+.input-box {
+    border: 1.5px solid var(--border);
+    border-radius: 0;
+    background: var(--card-bg);
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* ── RIGHT PANEL ── */
+.right-panel {
+    flex: 1;
+    margin-left: 0;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 0;
+    padding: 24px 24px 16px 24px;
+    min-height: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.placeholder-msg {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.epic-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #000000;
+  line-height: 1.4;
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #6366f1, #3b82f6, #06b6d4);
+  
+  -webkit-background-clip: text;
+  background-clip: text;
+  
+  -webkit-text-fill-color: transparent; 
+  color: transparent;
+}

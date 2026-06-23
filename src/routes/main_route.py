@@ -1,7 +1,31 @@
 from flask import Blueprint, render_template
 
-main_bp = Blueprint('main', __name__, template_folder='../../templates')
+main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
     return render_template('homepage.html')
+
+@main_bp.route('/cpu_scheduling')
+def cpu_scheduling():
+    return render_template('cpu_scheduling.html')
+
+@main_bp.route('/memory_management')
+def memory_management():
+    return render_template('memory_management.html')
+
+@main_bp.route('/virtual_memory')
+def virtual_memory():
+    return render_template('virtual_memory.html')
+
+@main_bp.route('/disk_scheduling')
+def disk_scheduling():
+    return render_template('disk_scheduling.html')
+
+@main_bp.route('/contacts')
+def contacts():
+    return render_template('contacts.html')
+
+@main_bp.route('/projects')
+def projects():
+    return render_template('projects.html')
