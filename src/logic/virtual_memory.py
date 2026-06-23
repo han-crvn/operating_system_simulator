@@ -3,11 +3,7 @@ from collections import deque, defaultdict, OrderedDict
 
 app = Flask(__name__)
 
-
-# =========================
 # RESULT FORMATTER
-# =========================
-
 def build_result(history, faults, hits):
     return {
         "framesHistory": history,
@@ -16,11 +12,7 @@ def build_result(history, faults, hits):
         "totalAccesses": faults + hits
     }
 
-
-# =========================
 # FIFO
-# =========================
-
 def fifo(ref, frames_count):
     frames = deque()
     history = []
@@ -40,11 +32,7 @@ def fifo(ref, frames_count):
 
     return build_result(history, faults, hits)
 
-
-# =========================
 # OPTIMAL
-# =========================
-
 def optimal(ref, frames_count):
     frames = []
     history = []
@@ -81,11 +69,7 @@ def optimal(ref, frames_count):
 
     return build_result(history, faults, hits)
 
-
-# =========================
 # LRU
-# =========================
-
 def lru(ref, frames_count):
     frames = OrderedDict()
     history = []
@@ -106,11 +90,7 @@ def lru(ref, frames_count):
 
     return build_result(history, faults, hits)
 
-
-# =========================
 # LRU APPROX (SECOND CHANCE)
-# =========================
-
 def lru_approx(ref, frames_count):
     frames = []
     ref_bit = {}
@@ -150,11 +130,7 @@ def lru_approx(ref, frames_count):
 
     return build_result(history, faults, hits)
 
-
-# =========================
 # LFU
-# =========================
-
 def lfu(ref, frames_count):
     frames = set()
     freq = defaultdict(int)
@@ -182,11 +158,7 @@ def lfu(ref, frames_count):
 
     return build_result(history, faults, hits)
 
-
-# =========================
 # MFU
-# =========================
-
 def mfu(ref, frames_count):
     frames = set()
     freq = defaultdict(int)
@@ -213,11 +185,6 @@ def mfu(ref, frames_count):
         history.append(list(frames))
 
     return build_result(history, faults, hits)
-
-
-# =========================
-# RUN SERVER
-# =========================
 
 if __name__ == "__main__":
     app.run(debug=True)
