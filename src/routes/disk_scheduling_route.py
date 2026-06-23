@@ -11,6 +11,7 @@ def simulate():
     requests  = data.get("requests", [])
     head      = data.get("head", 0)
     direction = data.get("direction", "right")
+    disk_size = data.get("disk_size")
 
     if not algorithm:
         return jsonify({"error": "No algorithm specified."}), 400
@@ -21,8 +22,8 @@ def simulate():
     algorithms = {
         "FCFS":  lambda: fcfs(requests, head),
         "SSTF":  lambda: sstf(requests, head),
-        "SCAN":  lambda: scan(requests, head, direction),
-        "CSCAN": lambda: cscan(requests, head, direction),
+        "SCAN":  lambda: scan(requests, head, direction, disk_size),
+        "CSCAN": lambda: cscan(requests, head, direction, disk_size),
         "LOOK":  lambda: look(requests, head, direction),
         "CLOOK": lambda: clook(requests, head, direction),
     }
