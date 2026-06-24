@@ -1,189 +1,245 @@
 from flask import Flask, request, jsonify
-from collections import deque, defaultdict, OrderedDict
 
 app = Flask(__name__)
 
-# FORMAT RESULT
-def build_result(frames_history, hits, faults):
+# ==================================================
+# MFT ALGORITHMS
+# ==================================================
+
+def best_fit(partitions, processes):
+
+    free = partitions.copy()
+    allocations = []
+    used_memory = 0
+
+    for i, process in enumerate(processes):
+
+        best_index = -1
+        best_size = float("inf")
+
+        for j in range(len(free)):
+
+            if free[j] >= process and free[j] < best_size:
+
+                best_size = free[j]
+                best_index = j
+
+        if best_index != -1:
+
+            allocations.append({
+                "process": f"P{i+1}",
+                "size": process,
+                "allocated": f"P{best_index+1}",
+                "status": "Allocated"
+            })
+
+            free[best_index] -= process
+            used_memory += process
+
+        else:
+
+            allocations.append({
+                "process": f"P{i+1}",
+                "size": process,
+                "allocated": "-",
+                "status": "Not Allocated"
+            })
+
     return {
-        "framesHistory": frames_history,
-        "pageFaults": faults,
-        "pageHits": hits
+        "allocations": allocations,
+        "used_memory": used_memory,
+        "free_memory": sum(free),
+        "utilization": round(
+            (used_memory / sum(partitions)) * 100,
+            2
+        )
     }
 
-# FIFO
-def fifo(pages, capacity):
-    frames = deque()
-    history = []
-    hits = 0
-    faults = 0
 
-    for page in pages:
-        if page in frames:
-            hits += 1
+def first_fit(partitions, processes):
+
+    free = partitions.copy()
+    allocations = []
+    used_memory = 0
+
+    for i, process in enumerate(processes):
+
+        allocated = False
+
+        for j in range(len(free)):
+
+            if free[j] >= process:
+
+                allocations.append({
+                    "process": f"P{i+1}",
+                    "size": process,
+                    "allocated": f"P{j+1}",
+                    "status": "Allocated"
+                })
+
+                free[j] -= process
+                used_memory += process
+                allocated = True
+                break
+
+        if not allocated:
+
+            allocations.append({
+                "process": f"P{i+1}",
+                "size": process,
+                "allocated": "-",
+                "status": "Not Allocated"
+            })
+
+    return {
+        "allocations": allocations,
+        "used_memory": used_memory,
+        "free_memory": sum(free),
+        "utilization": round(
+            (used_memory / sum(partitions)) * 100,
+            2
+        )
+    }
+
+
+def worst_fit(partitions, processes):
+
+    free = partitions.copy()
+    allocations = []
+    used_memory = 0
+
+    for i, process in enumerate(processes):
+
+        worst_index = -1
+        largest = -1
+
+        for j in range(len(free)):
+
+            if free[j] >= process and free[j] > largest:
+
+                largest = free[j]
+                worst_index = j
+
+        if worst_index != -1:
+
+            allocations.append({
+                "process": f"P{i+1}",
+                "size": process,
+                "allocated": f"P{worst_index+1}",
+                "status": "Allocated"
+            })
+
+            free[worst_index] -= process
+            used_memory += process
+
         else:
-            faults += 1
-            if len(frames) == capacity:
-                frames.popleft()
-            frames.append(page)
 
-        history.append(list(frames))
+            allocations.append({
+                "process": f"P{i+1}",
+                "size": process,
+                "allocated": "-",
+                "status": "Not Allocated"
+            })
 
-    return build_result(history, hits, faults)
-
-# OPTIMAL
-def optimal(pages, capacity):
-    frames = []
-    history = []
-    hits = 0
-    faults = 0
-
-    for i in range(len(pages)):
-        page = pages[i]
-
-        if page in frames:
-            hits += 1
-        else:
-            faults += 1
-
-            if len(frames) < capacity:
-                frames.append(page)
-            else:
-                farthest_index = -1
-                replace_index = -1
-
-                for j in range(len(frames)):
-                    try:
-                        next_use = pages[i+1:].index(frames[j])
-                    except ValueError:
-                        next_use = float('inf')
-
-                    if next_use > farthest_index:
-                        farthest_index = next_use
-                        replace_index = j
-
-                frames[replace_index] = page
-
-        history.append(frames.copy())
-
-    return build_result(history, hits, faults)
-
-# LRU
-def lru(pages, capacity):
-    frames = OrderedDict()
-    history = []
-    hits = 0
-    faults = 0
-
-    for page in pages:
-        if page in frames:
-            hits += 1
-            frames.move_to_end(page)
-        else:
-            faults += 1
-            if len(frames) == capacity:
-                frames.popitem(last=False)
-            frames[page] = True
-
-        history.append(list(frames.keys()))
-
-    return build_result(history, hits, faults)
-
-# LRU APPROX (Second Chance)
-
-def lru_approx(pages, capacity):
-    frames = []
-    ref_bits = {}
-    queue = deque()
-
-    history = []
-    hits = 0
-    faults = 0
-
-    for page in pages:
-        if page in frames:
-            hits += 1
-            ref_bits[page] = 1
-        else:
-            faults += 1
-
-            if len(frames) < capacity:
-                frames.append(page)
-                queue.append(page)
-                ref_bits[page] = 1
-            else:
-                while True:
-                    candidate = queue[0]
-                    if ref_bits[candidate] == 0:
-                        queue.popleft()
-                        frames.remove(candidate)
-                        break
-                    else:
-                        ref_bits[candidate] = 0
-                        queue.rotate(-1)
-
-                frames.append(page)
-                queue.append(page)
-                ref_bits[page] = 1
-
-        history.append(frames.copy())
-
-    return build_result(history, hits, faults)
+    return {
+        "allocations": allocations,
+        "used_memory": used_memory,
+        "free_memory": sum(free),
+        "utilization": round(
+            (used_memory / sum(partitions)) * 100,
+            2
+        )
+    }
 
 
-# LFU
-def lfu(pages, capacity):
-    frames = set()
-    freq = defaultdict(int)
-    history = []
-    hits = 0
-    faults = 0
+# ==================================================
+# MVT
+# ==================================================
 
-    for page in pages:
-        freq[page] += 1
+def mvt_without_compaction(
+        total_memory,
+        os_size,
+        processes
+):
 
-        if page in frames:
-            hits += 1
-        else:
-            faults += 1
+    available = total_memory - os_size
 
-            if len(frames) < capacity:
-                frames.add(page)
-            else:
-                lfu_page = min(frames, key=lambda p: freq[p])
-                frames.remove(lfu_page)
-                frames.add(page)
+    used = 0
 
-        history.append(list(frames))
+    memory_map = []
 
-    return build_result(history, hits, faults)
+    for process in processes:
 
-# MFU
-def mfu(pages, capacity):
-    frames = set()
-    freq = defaultdict(int)
-    history = []
-    hits = 0
-    faults = 0
+        if process <= available:
 
-    for page in pages:
-        freq[page] += 1
+            memory_map.append({
+                "type": "PROCESS",
+                "size": process
+            })
 
-        if page in frames:
-            hits += 1
-        else:
-            faults += 1
+            available -= process
+            used += process
 
-            if len(frames) < capacity:
-                frames.add(page)
-            else:
-                mfu_page = max(frames, key=lambda p: freq[p])
-                frames.remove(mfu_page)
-                frames.add(page)
+    memory_map.append({
+        "type": "HOLE",
+        "size": available
+    })
 
-        history.append(list(frames))
+    return {
 
-    return build_result(history, hits, faults)
+        "memory_map": memory_map,
 
-if __name__ == "__main__":
-    app.run(debug=True)
+        "used_memory": used,
+
+        "free_memory": available,
+
+        "holes": 1,
+
+        "utilization": round(
+            (used / total_memory) * 100,
+            2
+        )
+    }
+
+
+def mvt_with_compaction(
+        total_memory,
+        os_size,
+        processes
+):
+
+    available = total_memory - os_size
+
+    used = sum(processes)
+
+    free = available - used
+
+    memory_map = []
+
+    for process in processes:
+
+        memory_map.append({
+            "type": "PROCESS",
+            "size": process
+        })
+
+    memory_map.append({
+        "type": "HOLE",
+        "size": free
+    })
+
+    return {
+
+        "memory_map": memory_map,
+
+        "used_memory": used,
+
+        "free_memory": free,
+
+        "holes": 1,
+
+        "utilization": round(
+            (used / total_memory) * 100,
+            2
+        )
+    }

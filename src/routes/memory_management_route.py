@@ -1,36 +1,83 @@
 from flask import Blueprint, request, jsonify
-from src.logic.memory_management import fifo, optimal, lru, lru_approx, lfu, mfu
+from src.logic.memory_management import best_fit, first_fit, worst_fit, mvt_without_compaction, mvt_with_compaction
 
 memory_management_bp = Blueprint("memory_management", __name__)
 
 @memory_management_bp.route("/simulate-memory", methods=["POST"])
-def simulate_memory():
-    data = request.get_json()
+def simulate_mft():
 
-    algorithm = data.get("algorithm", "").lower()
-    pages     = data.get("pages", [])
-    capacity  = data.get("capacity", 0)
+    data = request.json
 
-    if not algorithm or algorithm == "none":
-        return jsonify({"error": "No algorithm specified."}), 400
+    algorithm = data["algorithm"]
 
-    if not pages:
-        return jsonify({"error": "Page reference string is empty."}), 400
+    partitions = data["partitions"]
 
-    if not isinstance(capacity, int) or capacity <= 0:
-        return jsonify({"error": "Frame capacity must be a positive integer."}), 400
+    processes = data["processes"]
 
-    algorithms = {
-        "fifo":      lambda: fifo(pages, capacity),
-        "opt":       lambda: optimal(pages, capacity),
-        "lru":       lambda: lru(pages, capacity),
-        "lru-approx": lambda: lru_approx(pages, capacity),
-        "lfu":       lambda: lfu(pages, capacity),
-        "mfu":       lambda: mfu(pages, capacity),
-    }
+    if algorithm == "best_fit":
 
-    if algorithm not in algorithms:
-        return jsonify({"error": f"Unknown algorithm: {algorithm}"}), 400
+        result = best_fit(
+            partitions,
+            processes
+        )
 
-    result = algorithms[algorithm]()
+    elif algorithm == "first_fit":
+
+        result = first_fit(
+            partitions,
+            processes
+        )
+
+    elif algorithm == "worst_fit":
+
+        result = worst_fit(
+            partitions,
+            processes
+        )
+
+    else:
+
+        return jsonify({
+            "error": "Invalid Algorithm"
+        }), 400
+
+    return jsonify(result)
+
+
+# ==================================================
+# MVT
+# ==================================================
+
+@memory_management_bp.route(
+    "/simulate-mvt",
+    methods=["POST"]
+)
+def simulate_mvt():
+
+    data = request.json
+
+    mode = data["mode"]
+
+    total_memory = data["total_memory"]
+
+    os_size = data["os_size"]
+
+    processes = data["processes"]
+
+    if mode == "without_compaction":
+
+        result = mvt_without_compaction(
+            total_memory,
+            os_size,
+            processes
+        )
+
+    else:
+
+        result = mvt_with_compaction(
+            total_memory,
+            os_size,
+            processes
+        )
+
     return jsonify(result)
