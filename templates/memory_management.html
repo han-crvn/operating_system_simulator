@@ -1,59 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>OS Simulator</title>
-        <link rel="stylesheet" href="{{url_for('static', filename='css/components/header.css')}}">
-        <link rel="stylesheet" href="{{url_for('static', filename='css/memory_management.css')}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Management Simulator</title>
 
-        <!--Font Awesome-->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    </head>
-    <body>
-        {% include 'components/header.html' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/memory_management.css') }}">
+</head>
+<body>
 
-        <!-- MAIN -->
-        <main class="page-wrapper">
+{% include 'components/header.html' %}
 
-            <!-- LEFT PANEL -->
-            <div class="left-panel">
-                <h1 class="page-title">MEMORY<br></h1>
-                <h1 class="page-title-a">MANAGEMENT</h1>
+<main class="page-wrapper">
 
-                <div class="algorithm-row">
-                    <label for="algorithm-select">Algorithm</label>
-                    <select id="algorithm-select">
-                        <option value="none">None</option>
-                        <option value="fifo">FIFO (First In, First Out)</option>
-                        <option value="opt">Optimal Page Replacement</option>
-                        <option value="lru">LRU (Least Recently Used)</option>
-                        <option value="lru-approx">LRU Approximation</option>
-                        <option value="lfu">Counting-Based: LFU</option>
-                        <option value="mfu">Counting-Based: MFU</option>
-                    </select>
-                </div>
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <h1 class="page-title">MEMORY<br>MANAGEMENT</h1>
 
-                <!-- Input box -->
-                <div class="input-box">
-                    
+        <div class="algorithm-row">
+            <label>Algorithm</label>
+            <select id="algorithm-select">
+                <option value="none">None</option>
+                <option value="mft">MFT</option>
+                <option value="mvt">MVT</option>
+            </select>
+        </div>
+
+        <div class="input-box">
+
+            <!-- FIT -->
+            <div id="fit-section" style="display:none;">
+                <h3>Fit Algorithm</h3>
+                <div class="fit-buttons">
+                    <button class="fit-btn active" data-fit="best">Best Fit</button>
+                    <button class="fit-btn" data-fit="first">First Fit</button>
+                    <button class="fit-btn" data-fit="worst">Worst Fit</button>
                 </div>
             </div>
 
-            <!-- RIGHT PANEL -->
-            <div class="right-panel" id="right-panel">
-
-                <div id="placeholder-msg" class="placeholder-msg">
-                        <h1 class="epic-title">
-                            Select a <span class="gradient-text">memory management<br>scheduling</span> type.
-                        </h1>
-                </div>
-
+            <!-- MEMORY -->
+            <div id="memory-section" style="display:none;">
+                <h3>Total Memory</h3>
+                <input id="total-memory" type="number" placeholder="Enter total memory">
             </div>
 
-        </main>
+            <!-- MFT PARTITIONS -->
+            <div id="partition-section" style="display:none;">
+                <div class="section-header">
+                    <h3>Partitions</h3>
+                    <div>
+                        <button id="add-partition">+</button>
+                        <button id="remove-partition">−</button>
+                    </div>
+                </div>
 
-        <script type="module" src="{{ url_for('static', filename='javascript/memory_management.js') }}"></script>
+                <div id="partition-container">
+                    <div class="partition-row">
+                        <label>P1</label>
+                        <input type="number" placeholder="Size">
+                    </div>
+                </div>
+            </div>
 
-    </body>
+            <!-- MFT PROCESSES -->
+            <div id="mft-process-section" style="display:none;">
+                <div class="section-header">
+                    <h3>Processes</h3>
+                    <div>
+                        <button id="add-mft-process">+</button>
+                        <button id="remove-mft-process">−</button>
+                    </div>
+                </div>
+
+                <div id="mft-process-container">
+                    <div class="process-row">
+                        <label>P1</label>
+                        <input type="number" placeholder="Size">
+                    </div>
+                </div>
+            </div>
+
+            <!-- MVT EXTRA -->
+            <div id="mvt-extra-section" style="display:none;">
+                <h3>Compaction</h3>
+                <select id="compaction-select">
+                    <option>No</option>
+                    <option>Yes</option>
+                </select>
+
+                <h3>CPU Scheduling</h3>
+                <select id="cpu-algo-select">
+                    <option value="fcfs">FCFS</option>
+                    <option value="sjf">SJF</option>
+                    <option value="priority">Priority</option>
+                    <option value="rr">Round Robin</option>
+                </select>
+
+                <div id="quantum-section" style="display:none;">
+                    <h3>Time Quantum</h3>
+                    <input type="number" id="time-quantum">
+                </div>
+            </div>
+
+            <!-- MVT PROCESSES -->
+            <div id="mvt-process-section" style="display:none;">
+                <div class="section-header">
+                    <h3>Jobs / Processes</h3>
+                    <div>
+                        <button id="add-mvt-process">+</button>
+                        <button id="remove-mvt-process">−</button>
+                    </div>
+                </div>
+
+                <div id="mvt-process-container">
+                    <div class="job-row">
+                        <label>P1</label>
+                        <input type="number" placeholder="Size">
+                        <input type="number" placeholder="Arrival">
+                        <input type="number" placeholder="Burst">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="simulate-btn" id="simulate-btn">
+            SIMULATE
+        </button>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+        <!-- DEFAULT -->
+        <div id="placeholder-msg" class="placeholder-msg">
+            <h1>Select a <span class="gradient-text">memory management algo</span></h1>
+        </div>
+
+        <!-- MFT -->
+        <div id="mft-view" style="display:none;">
+            <h2>MFT Output</h2>
+
+            <div class="output-layout">
+
+                <!-- LEFT: MEMORY MAP -->
+                <div class="memory-map-card">
+                    <h3>Memory Map</h3>
+                    <div id="mft-memory-map"></div>
+                </div>
+
+                <!-- RIGHT -->
+                <div class="stats-column">
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <h4>Total Memory</h4>
+                            <p id="mft-total-memory">0</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h4>Used Memory</h4>
+                            <p id="mft-used-memory">0</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h4>Utilization</h4>
+                            <p id="mft-utilization">0%</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h4>Free Memory</h4>
+                            <p id="mft-free-memory">0</p>
+                        </div>
+                    </div>
+
+                    <div class="allocation-card">
+                        <h3>Allocation Table</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Process</th>
+                                    <th>Partition</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mft-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MVT -->
+        <div id="mvt-view" style="display:none;">
+            <h2>MVT Output</h2>
+
+            <div class="output-layout">
+
+                <!-- LEFT -->
+                <div class="memory-map-card">
+                    <h3>Memory Map</h3>
+                    <div id="mvt-memory-map"></div>
+                </div>
+
+                <!-- RIGHT -->
+                <div class="stats-column">
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <h4>Total</h4>
+                            <p id="mvt-total-memory">0</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h4>Used</h4>
+                            <p id="mvt-used-memory">0</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h4>Utilization</h4>
+                            <p id="mvt-utilization">0%</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h4>Free</h4>
+                            <p id="mvt-free-memory">0</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h4>Holes</h4>
+                            <p id="holes-count">0</p>
+                        </div>
+
+                        <div class="stat-box">
+                            <h4>Largest Hole</h4>
+                            <p id="largest-hole">0</p>
+                        </div>
+                    </div>
+
+                    <div class="fragmentation-warning" id="fragmentation-warning">
+                        External fragmentation detected. Compaction recommended.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script src="{{ url_for('static', filename='javascript/memory_management.js') }}"></script>
+</body>
 </html>
