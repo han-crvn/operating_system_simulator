@@ -184,12 +184,13 @@
         <!-- MVT -->
         <div id="mvt-view" style="display:none;">
             <h2>MVT Output</h2>
-            <div class="output-layout">
-                <div class="memory-map-card">
-                    <h3>Memory Map</h3>
+            <div class="mvt-output-layout">
+                <div class="memory-map-card mvt-timeline-card">
+                    <h3>Memory Timeline</h3>
                     <div id="mvt-memory-map"></div>
                 </div>
-                <div class="stats-column">
+
+                <div class="mvt-data-panel">
                     <div class="stats-grid">
                         <div class="stat-box">
                             <h4>Total</h4>
@@ -216,10 +217,13 @@
                             <p id="largest-hole">0</p>
                         </div>
                     </div>
-                    <p id="compaction-label" style="font-size:13px; color:#555; margin:0 0 8px;"></p>
-                    <p id="load-order" style="font-size:13px; color:#555; margin:0 0 12px;"></p>
-                    <div class="fragmentation-warning" id="fragmentation-warning" style="display:none;">
-                        External fragmentation detected. Compaction recommended.
+                    <div class="mvt-status-panel">
+                        <p id="compaction-label"></p>
+                        <p id="load-order"></p>
+                        <p id="mvt-final-state"></p>
+                        <div class="fragmentation-warning" id="fragmentation-warning" style="display:none;">
+                            External fragmentation detected. Compaction recommended.
+                        </div>
                     </div>
                 </div>
             </div>

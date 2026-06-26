@@ -175,7 +175,203 @@ def apply_cpu_scheduling(processes, algorithm, quantum=2):
 # MVT ALGORITHMS
 # ==================================================
 
+def _normalize_segments(segments):
+    normalized = []
+
+    for seg in segments:
+        if seg["size"] <= 0:
+            continue
+
+        if normalized and normalized[-1]["type"] == "HOLE" and seg["type"] == "HOLE":
+            normalized[-1]["size"] += seg["size"]
+            normalized[-1]["label"] = f"HOLE ({normalized[-1]['size']} KB)"
+        else:
+            normalized.append(seg.copy())
+
+    return normalized
+
+
+def _compact_segments(segments):
+    used_segments = [seg for seg in segments if seg["type"] != "HOLE"]
+    free_size = sum(seg["size"] for seg in segments if seg["type"] == "HOLE")
+
+    if free_size > 0:
+        used_segments.append({
+            "type": "HOLE",
+            "size": free_size,
+            "label": f"HOLE ({free_size} KB)"
+        })
+
+    return used_segments
+
+
+def _segment_offsets(segments):
+    offset = 0
+    mapped = []
+
+    for seg in segments:
+        mapped.append({
+            **seg,
+            "start": offset,
+            "end": offset + seg["size"]
+        })
+        offset += seg["size"]
+
+    return mapped
+
+
+def _build_mvt_timeline(total_memory, os_size, processes, cpu_algo, quantum, compact=False):
+    ordered = apply_cpu_scheduling(processes, cpu_algo, quantum)
+    order_rank = {proc["name"]: index for index, proc in enumerate(ordered)}
+    process_by_name = {proc["name"]: proc for proc in ordered}
+
+    segments = [{"type": "OS", "size": os_size, "label": f"OS ({os_size} KB)"}]
+    if total_memory - os_size > 0:
+        segments.append({
+            "type": "HOLE",
+            "size": total_memory - os_size,
+            "label": f"HOLE ({total_memory - os_size} KB)"
+        })
+
+    not_arrived = set(process_by_name.keys())
+    waiting = []
+    loaded = {}
+    completed = set()
+    rejected = set()
+    snapshots = []
+    current_time = 0
+
+    def try_allocate():
+        nonlocal segments
+        changed = True
+
+        while changed:
+            changed = False
+            waiting.sort(key=lambda name: order_rank.get(name, 0))
+
+            for name in list(waiting):
+                proc = process_by_name[name]
+
+                for index, seg in enumerate(segments):
+                    if seg["type"] != "HOLE" or seg["size"] < proc["size"]:
+                        continue
+
+                    process_seg = {
+                        "type": "PROCESS",
+                        "size": proc["size"],
+                        "label": f"{name} ({proc['size']} KB)",
+                        "process": name
+                    }
+                    remaining = seg["size"] - proc["size"]
+                    replacement = [process_seg]
+
+                    if remaining > 0:
+                        replacement.append({
+                            "type": "HOLE",
+                            "size": remaining,
+                            "label": f"HOLE ({remaining} KB)"
+                        })
+
+                    segments = segments[:index] + replacement + segments[index + 1:]
+                    loaded[name] = current_time + max(proc.get("burst", 0), 1)
+                    waiting.remove(name)
+                    changed = True
+                    break
+
+        for name in list(waiting):
+            proc = process_by_name[name]
+            if proc["size"] > total_memory - os_size:
+                waiting.remove(name)
+                rejected.add(name)
+
+    def capture_snapshot():
+        used = sum(seg["size"] for seg in segments if seg["type"] != "HOLE")
+        holes = [seg["size"] for seg in segments if seg["type"] == "HOLE"]
+
+        snapshots.append({
+            "time": current_time,
+            "segments": _segment_offsets(segments),
+            "used_memory": used,
+            "free_memory": sum(holes),
+            "holes": len(holes),
+            "largest_hole": max(holes) if holes else 0,
+            "loaded": list(loaded.keys()),
+            "waiting": waiting[:],
+            "completed": sorted(completed, key=lambda name: order_rank.get(name, 0)),
+            "rejected": sorted(rejected, key=lambda name: order_rank.get(name, 0))
+        })
+
+    while True:
+        for proc in ordered:
+            if proc["name"] in not_arrived and proc.get("arrival", 0) <= current_time:
+                not_arrived.remove(proc["name"])
+                waiting.append(proc["name"])
+
+        for name, finish_time in list(loaded.items()):
+            if finish_time <= current_time:
+                segments = [
+                    {
+                        "type": "HOLE",
+                        "size": seg["size"],
+                        "label": f"HOLE ({seg['size']} KB)"
+                    } if seg.get("process") == name else seg
+                    for seg in segments
+                ]
+                del loaded[name]
+                completed.add(name)
+
+        segments = _normalize_segments(segments)
+        if compact:
+            segments = _compact_segments(segments)
+
+        try_allocate()
+        if compact:
+            segments = _compact_segments(segments)
+
+        capture_snapshot()
+
+        future_arrivals = [
+            process_by_name[name].get("arrival", 0)
+            for name in not_arrived
+            if process_by_name[name].get("arrival", 0) > current_time
+        ]
+        future_completions = [
+            finish_time
+            for finish_time in loaded.values()
+            if finish_time > current_time
+        ]
+        next_times = future_arrivals + future_completions
+
+        if not next_times:
+            break
+
+        next_time = min(next_times)
+        if next_time == current_time:
+            break
+        current_time = next_time
+
+    final_snapshot = snapshots[-1]
+
+    return {
+        "memory_map": final_snapshot["segments"],
+        "timeline": snapshots,
+        "load_order": [p["name"] for p in ordered],
+        "total_memory": total_memory,
+        "used_memory": final_snapshot["used_memory"],
+        "free_memory": final_snapshot["free_memory"],
+        "holes": final_snapshot["holes"],
+        "largest_hole": final_snapshot["largest_hole"],
+        "utilization": round((final_snapshot["used_memory"] / total_memory) * 100, 2) if total_memory > 0 else 0,
+        "has_fragmentation": final_snapshot["holes"] > 1,
+        "waiting": final_snapshot["waiting"],
+        "completed": final_snapshot["completed"],
+        "rejected": final_snapshot["rejected"]
+    }
+
+
 def mvt_without_compaction(total_memory, os_size, processes, cpu_algo="fcfs", quantum=2):
+    return _build_mvt_timeline(total_memory, os_size, processes, cpu_algo, quantum, compact=False)
+
     # Apply CPU scheduling to determine load order
     ordered = apply_cpu_scheduling(processes, cpu_algo, quantum)
 
@@ -232,6 +428,10 @@ def mvt_without_compaction(total_memory, os_size, processes, cpu_algo="fcfs", qu
 
 
 def mvt_with_compaction(total_memory, os_size, processes, cpu_algo="fcfs", quantum=2):
+    result = _build_mvt_timeline(total_memory, os_size, processes, cpu_algo, quantum, compact=True)
+    result["has_fragmentation"] = False
+    return result
+
     # Apply CPU scheduling to determine load order
     ordered = apply_cpu_scheduling(processes, cpu_algo, quantum)
 

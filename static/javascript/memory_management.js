@@ -23,7 +23,7 @@ let partitionCount  = 1;
 let mftProcessCount = 1;
 let mvtProcessCount = 1;
 
-const BLOCK_COLORS = ["#bfdbfe", "#bbf7d0", "#fde68a", "#fecaca", "#e9d5ff", "#fed7aa"];
+const BLOCK_COLORS = ["#bfdbfe", "#bbf7d0", "#fde68a", "#fecaca", "#e9d5ff", "#fed7aa", "#fca5a5", "#86efac", "#93c5fd", "#f9a8d4"];
 const HOLE_COLOR   = "#e5e7eb";
 
 /* =========================
@@ -221,7 +221,8 @@ async function simulateMVT() {
     const cpuAlgo     = document.getElementById("cpu-algo-select").value;  // ← now sent
     const quantum     = parseInt(document.getElementById("time-quantum")?.value, 10) || 2; // ← now sent
 
-    if (processes.some(p => !p.size)) { alert("All processes need a size."); return; }
+    if (processes.some(p => !p.size))  { alert("All processes need a size."); return; }
+    if (processes.some(p => !p.burst)) { alert("All MVT processes need a burst time."); return; }
     if (!totalMemory)                 { alert("Please enter total memory."); return; }
     if (osSize >= totalMemory)        { alert(`OS size (${osSize} KB) must be smaller than total memory (${totalMemory} KB).`); return; }
 
@@ -290,7 +291,7 @@ function renderMFT(data, totalMemory) {
 /* =========================
    RENDER MVT
 ========================= */
-function renderMVT(data, mode) {
+function renderMVTLegacy(data, mode) {
     mftView.style.display = "none";
     mvtView.style.display = "block";
 
@@ -342,4 +343,133 @@ function renderMVT(data, mode) {
         block.textContent = seg.label;
         map.appendChild(block);
     });
+}
+
+function renderMVT(data, mode) {
+    mftView.style.display = "none";
+    mvtView.style.display = "block";
+
+    document.getElementById("mvt-total-memory").textContent = `${data.total_memory} KB`;
+    document.getElementById("mvt-used-memory").textContent  = `${data.used_memory} KB`;
+    document.getElementById("mvt-free-memory").textContent  = `${data.free_memory} KB`;
+    document.getElementById("mvt-utilization").textContent  = `${data.utilization}%`;
+    document.getElementById("holes-count").textContent      = data.holes;
+    document.getElementById("largest-hole").textContent     = `${data.largest_hole} KB`;
+
+    const loadOrderEl = document.getElementById("load-order");
+    if (loadOrderEl && data.load_order) {
+        loadOrderEl.textContent = `Load order: ${data.load_order.join(" -> ")}`;
+    }
+
+    const compactionEl = document.getElementById("compaction-label");
+    if (compactionEl) {
+        compactionEl.textContent = mode === "with_compaction"
+            ? "Compaction applied: holes are merged into one block when memory changes."
+            : "No compaction: holes remain in place until adjacent free space can merge.";
+    }
+
+    const finalStateEl = document.getElementById("mvt-final-state");
+    if (finalStateEl) {
+        const waiting = data.waiting?.length ? data.waiting.join(", ") : "None";
+        const completed = data.completed?.length ? data.completed.join(", ") : "None";
+        const rejected = data.rejected?.length ? data.rejected.join(", ") : "None";
+        finalStateEl.textContent = `Final state: completed ${completed}; waiting ${waiting}; rejected ${rejected}.`;
+    }
+
+    const warning = document.getElementById("fragmentation-warning");
+    warning.style.display = data.has_fragmentation ? "block" : "none";
+
+    renderMvtTimeline(data);
+}
+
+function renderMvtTimeline(data) {
+    const map = document.getElementById("mvt-memory-map");
+    const timeline = data.timeline?.length
+        ? data.timeline
+        : [{ time: 0, segments: data.memory_map }];
+
+    map.innerHTML = "";
+    map.className = "mvt-timeline";
+
+    const processNames = [
+        ...new Set(timeline.flatMap(snapshot =>
+            snapshot.segments
+                .filter(seg => seg.type === "PROCESS")
+                .map(seg => seg.process || processNameFromLabel(seg.label))
+        ))
+    ];
+    const processColors = new Map(
+        processNames.map((name, index) => [name, BLOCK_COLORS[index % BLOCK_COLORS.length]])
+    );
+
+    timeline.forEach(snapshot => {
+        const snapshotEl = document.createElement("div");
+        snapshotEl.className = "mvt-time-snapshot";
+
+        const timeLabel = document.createElement("div");
+        timeLabel.className = "mvt-time-label";
+        timeLabel.textContent = snapshot.time;
+
+        const shell = document.createElement("div");
+        shell.className = "mvt-column-shell";
+
+        const leftLabels = document.createElement("div");
+        leftLabels.className = "mvt-boundary-labels";
+
+        const stack = document.createElement("div");
+        stack.className = "mvt-stack";
+
+        const boundaries = new Set([0, data.total_memory]);
+
+        snapshot.segments.forEach(seg => {
+            const start = Number.isFinite(seg.start) ? seg.start : 0;
+            const end = Number.isFinite(seg.end) ? seg.end : start + seg.size;
+            boundaries.add(start);
+            boundaries.add(end);
+
+            const block = document.createElement("div");
+            block.className = "mvt-segment";
+            block.style.top = `${(start / data.total_memory) * 100}%`;
+            block.style.height = `${(seg.size / data.total_memory) * 100}%`;
+            block.style.background = mvtSegmentColor(seg, processColors);
+            block.title = `${seg.label}: ${start}-${end} KB`;
+
+            if (seg.type !== "HOLE" && seg.size >= Math.max(data.total_memory * 0.035, 1)) {
+                const label = document.createElement("span");
+                label.className = "mvt-segment-label";
+                label.textContent = seg.type === "OS"
+                    ? "OS"
+                    : processNameFromLabel(seg.label);
+                block.appendChild(label);
+            }
+
+            stack.appendChild(block);
+        });
+
+        [...boundaries]
+            .sort((a, b) => a - b)
+            .forEach(value => {
+                const label = document.createElement("span");
+                label.textContent = value;
+                label.style.top = `${(value / data.total_memory) * 100}%`;
+                if (value === data.total_memory) {
+                    label.className = "mvt-bottom-boundary";
+                }
+                leftLabels.appendChild(label);
+            });
+
+        shell.append(leftLabels, stack);
+        snapshotEl.append(timeLabel, shell);
+        map.appendChild(snapshotEl);
+    });
+}
+
+function mvtSegmentColor(seg, processColors) {
+    if (seg.type === "OS") return "#c7d2fe";
+    if (seg.type === "HOLE") return "#ffffff";
+    return processColors.get(seg.process || processNameFromLabel(seg.label)) || BLOCK_COLORS[0];
+}
+
+function processNameFromLabel(label) {
+    return String(label || "").split(" ")[0];
 }

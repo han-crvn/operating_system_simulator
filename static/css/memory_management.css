@@ -224,6 +224,121 @@ input, select {
     gap: 8px;
 }
 
+.mvt-output-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mvt-timeline-card {
+    width: 100%;
+    min-height: 560px;
+}
+
+#mvt-memory-map.mvt-timeline {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 34px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 18px 14px 10px;
+}
+
+.mvt-time-snapshot {
+    flex: 0 0 118px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 8px;
+}
+
+.mvt-time-label {
+    text-align: center;
+    font-size: 30px;
+    line-height: 1;
+    font-weight: 500;
+    color: #111827;
+}
+
+.mvt-column-shell {
+    display: grid;
+    grid-template-columns: 52px 60px;
+    align-items: stretch;
+}
+
+.mvt-boundary-labels {
+    position: relative;
+    height: 500px;
+    font-size: 13px;
+    color: #111827;
+    font-variant-numeric: tabular-nums;
+}
+
+.mvt-boundary-labels span {
+    position: absolute;
+    transform: translateY(-50%);
+    right: 8px;
+    white-space: nowrap;
+}
+
+.mvt-boundary-labels .mvt-bottom-boundary {
+    transform: translateY(-100%);
+}
+
+.mvt-stack {
+    position: relative;
+    height: 500px;
+    border: 1.5px solid #444;
+    background: white;
+}
+
+.mvt-segment {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: #111827;
+    font-weight: 700;
+    font-size: 15px;
+    text-align: center;
+}
+
+.mvt-segment:last-child {
+    border-bottom: none;
+}
+
+.mvt-segment-label {
+    padding: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mvt-data-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mvt-status-panel {
+    border: 1px solid #ccc;
+    background: #fafafa;
+    padding: 16px;
+}
+
+.mvt-status-panel p {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: #555;
+}
+
+.mvt-status-panel p:last-child {
+    margin-bottom: 0;
+}
+
 /* Example memory blocks */
 .memory-block {
     padding: 18px 8px;
@@ -333,5 +448,17 @@ th {
 
     .stats-grid {
         grid-template-columns: 1fr;
+    }
+
+    .mvt-time-snapshot {
+        flex-basis: 108px;
+    }
+
+    .mvt-column-shell {
+        grid-template-columns: 48px 56px;
+    }
+
+    #mvt-memory-map.mvt-timeline {
+        gap: 26px;
     }
 }
