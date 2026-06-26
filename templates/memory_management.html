@@ -29,7 +29,7 @@
 
         <div class="input-box">
 
-            <!-- FIT -->
+            <!-- FIT (MFT only) -->
             <div id="fit-section" style="display:none;">
                 <h3>Fit Algorithm</h3>
                 <div class="fit-buttons">
@@ -41,8 +41,8 @@
 
             <!-- MEMORY -->
             <div id="memory-section" style="display:none;">
-                <h3>Total Memory</h3>
-                <input id="total-memory" type="number" placeholder="Enter total memory">
+                <h3>Total Memory (KB)</h3>
+                <input id="total-memory" type="number" placeholder="e.g. 1024" min="1">
             </div>
 
             <!-- MFT PARTITIONS -->
@@ -54,11 +54,10 @@
                         <button id="remove-partition">−</button>
                     </div>
                 </div>
-
                 <div id="partition-container">
                     <div class="partition-row">
                         <label>P1</label>
-                        <input type="number" placeholder="Size">
+                        <input type="number" placeholder="Size (KB)">
                     </div>
                 </div>
             </div>
@@ -72,21 +71,24 @@
                         <button id="remove-mft-process">−</button>
                     </div>
                 </div>
-
                 <div id="mft-process-container">
                     <div class="process-row">
                         <label>P1</label>
-                        <input type="number" placeholder="Size">
+                        <input type="number" placeholder="Size (KB)">
                     </div>
                 </div>
             </div>
 
             <!-- MVT EXTRA -->
             <div id="mvt-extra-section" style="display:none;">
+
+                <h3>OS Size (KB)</h3>
+                <input id="os-size" type="number" placeholder="e.g. 100" value="100" min="1">
+
                 <h3>Compaction</h3>
                 <select id="compaction-select">
-                    <option>No</option>
-                    <option>Yes</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
                 </select>
 
                 <h3>CPU Scheduling</h3>
@@ -99,7 +101,7 @@
 
                 <div id="quantum-section" style="display:none;">
                     <h3>Time Quantum</h3>
-                    <input type="number" id="time-quantum">
+                    <input type="number" id="time-quantum" min="1">
                 </div>
             </div>
 
@@ -112,21 +114,19 @@
                         <button id="remove-mvt-process">−</button>
                     </div>
                 </div>
-
                 <div id="mvt-process-container">
                     <div class="job-row">
                         <label>P1</label>
-                        <input type="number" placeholder="Size">
+                        <input type="number" placeholder="Size (KB)">
                         <input type="number" placeholder="Arrival">
                         <input type="number" placeholder="Burst">
                     </div>
                 </div>
             </div>
+
         </div>
 
-        <button class="simulate-btn" id="simulate-btn">
-            SIMULATE
-        </button>
+        <button class="simulate-btn" id="simulate-btn">SIMULATE</button>
     </div>
 
     <!-- RIGHT PANEL -->
@@ -140,39 +140,30 @@
         <!-- MFT -->
         <div id="mft-view" style="display:none;">
             <h2>MFT Output</h2>
-
             <div class="output-layout">
-
-                <!-- LEFT: MEMORY MAP -->
                 <div class="memory-map-card">
                     <h3>Memory Map</h3>
                     <div id="mft-memory-map"></div>
                 </div>
-
-                <!-- RIGHT -->
                 <div class="stats-column">
                     <div class="stats-grid">
                         <div class="stat-box">
                             <h4>Total Memory</h4>
                             <p id="mft-total-memory">0</p>
                         </div>
-
                         <div class="stat-box">
                             <h4>Used Memory</h4>
                             <p id="mft-used-memory">0</p>
                         </div>
-
                         <div class="stat-box">
                             <h4>Utilization</h4>
                             <p id="mft-utilization">0%</p>
                         </div>
-
                         <div class="stat-box">
                             <h4>Free Memory</h4>
                             <p id="mft-free-memory">0</p>
                         </div>
                     </div>
-
                     <div class="allocation-card">
                         <h3>Allocation Table</h3>
                         <table>
@@ -193,50 +184,41 @@
         <!-- MVT -->
         <div id="mvt-view" style="display:none;">
             <h2>MVT Output</h2>
-
             <div class="output-layout">
-
-                <!-- LEFT -->
                 <div class="memory-map-card">
                     <h3>Memory Map</h3>
                     <div id="mvt-memory-map"></div>
                 </div>
-
-                <!-- RIGHT -->
                 <div class="stats-column">
                     <div class="stats-grid">
                         <div class="stat-box">
                             <h4>Total</h4>
                             <p id="mvt-total-memory">0</p>
                         </div>
-
                         <div class="stat-box">
                             <h4>Used</h4>
                             <p id="mvt-used-memory">0</p>
                         </div>
-
                         <div class="stat-box">
                             <h4>Utilization</h4>
                             <p id="mvt-utilization">0%</p>
                         </div>
-
                         <div class="stat-box">
                             <h4>Free</h4>
                             <p id="mvt-free-memory">0</p>
                         </div>
-
                         <div class="stat-box">
                             <h4>Holes</h4>
                             <p id="holes-count">0</p>
                         </div>
-
                         <div class="stat-box">
                             <h4>Largest Hole</h4>
                             <p id="largest-hole">0</p>
                         </div>
                     </div>
-
-                    <div class="fragmentation-warning" id="fragmentation-warning">
+                    <p id="compaction-label" style="font-size:13px; color:#555; margin:0 0 8px;"></p>
+                    <p id="load-order" style="font-size:13px; color:#555; margin:0 0 12px;"></p>
+                    <div class="fragmentation-warning" id="fragmentation-warning" style="display:none;">
                         External fragmentation detected. Compaction recommended.
                     </div>
                 </div>
