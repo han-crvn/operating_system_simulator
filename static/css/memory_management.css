@@ -1,151 +1,464 @@
-/* ── CSS VARIABLES ── */
 :root {
     --bg-color: #f4f4f4;
     --text-color: #000;
-    --text: #000;
-    --muted: #222;
     --border: #777;
-    --blue: #1565c0;
-    --red: #e53935;
-    --green: #2e7d32;
+    --blue: #2563eb;
     --header-h: 56px;
-    --panel-bg: #fff;
     --card-bg: #fff;
-    --input-bg: #fff;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* ── PAGE LAYOUT ── */
-.page-wrapper {
-    margin-top: var(--header-h);
-    display: flex;
-    gap: 18px;
-    height: calc(100vh - var(--header-h));
-    padding: 28px 32px;
-    background: #fff;
-    align-items: stretch;
-    justify-content: center;
-    overflow: hidden;
+* {
     box-sizing: border-box;
 }
 
-/* ── LEFT PANEL ── */
-.left-panel {
-    width: 300px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg-color);
     overflow: hidden;
 }
 
-.page-title {
-    font-family: 'Arial Black', Arial, sans-serif;
-    font-size: 28px;
-    font-weight: 900;
-    text-align: left;
-    letter-spacing: .03em;
-    color: #000;
+/* PAGE */
+.page-wrapper {
+    margin-top: var(--header-h);
+    height: calc(100vh - var(--header-h));
+    display: flex;
+    gap: 20px;
+    padding: 24px;
 }
 
-.page-title-a {
-    font-family: 'Arial Black', Arial, sans-serif;
-    font-size: 32px;
+/* LEFT PANEL */
+.left-panel {
+    width: 360px;
+    background: white;
+    border: 1.5px solid var(--border);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 30px;
     font-weight: 900;
-    text-align: left;
-    letter-spacing: .03em;
-    color: #000;
-    margin-top: -36px;
-    margin-bottom: 0px;
+    margin: 0;
 }
 
 .algorithm-row {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-color);
+    flex-direction: column;
+    gap: 8px;
+}
+
+.algorithm-row label {
+    font-weight: 700;
 }
 
 .algorithm-row select {
-    flex: 1;
-    min-width: 0;
-    padding: 6px 9px;
-    border: 1.5px solid var(--border);
-    border-radius: 0;
-    font-size: 13px;
-    background: var(--card-bg);
-    color: var(--text-color);
+    padding: 10px;
+    border: 1px solid var(--border);
+}
+
+.input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.input-box h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+}
+
+/* SECTION HEADER */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.section-header h3 {
+    margin: 0;
+}
+
+.section-header button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--blue);
+    color: white;
+    font-size: 20px;
     cursor: pointer;
+    margin-left: 4px;
+}
+
+/* ROWS */
+.partition-row,
+.process-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.partition-row label,
+.process-row label,
+.job-row label {
+    width: 40px;
+    font-weight: 700;
+}
+
+.job-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+/* FIT BUTTONS */
+.fit-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.fit-btn {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.fit-btn.active {
+    background: var(--blue);
+    color: white;
+}
+
+/* SIM BUTTON */
+.simulate-btn {
+    margin-top: auto;
+    padding: 14px;
+    border: none;
+    background: var(--blue);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* RIGHT PANEL */
+.right-panel {
+    flex: 1;
+    background: white;
+    border: 1.5px solid var(--border);
+    padding: 24px;
+    overflow-y: auto;
+}
+
+/* DEFAULT */
+.placeholder-msg {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.placeholder-msg h1 {
+    font-size: 42px;
+    margin: 0;
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #6366f1, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* OUTPUT */
+#mft-view h2,
+#mvt-view h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* SPLIT OUTPUT */
+.output-layout {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* MEMORY MAP */
+.memory-map-card {
+    width: 260px;
+    min-height: 500px;
+    border: 1px solid #ccc;
+    padding: 16px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+}
+
+.memory-map-card h3 {
+    margin-top: 0;
+    text-align: center;
+}
+
+#mft-memory-map,
+#mvt-memory-map {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.mvt-output-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mvt-timeline-card {
+    width: 100%;
+    min-height: 560px;
+}
+
+#mvt-memory-map.mvt-timeline {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 34px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 18px 14px 10px;
+}
+
+.mvt-time-snapshot {
+    flex: 0 0 118px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 8px;
+}
+
+.mvt-time-label {
+    text-align: center;
+    font-size: 30px;
+    line-height: 1;
+    font-weight: 500;
+    color: #111827;
+}
+
+.mvt-column-shell {
+    display: grid;
+    grid-template-columns: 52px 60px;
+    align-items: stretch;
+}
+
+.mvt-boundary-labels {
+    position: relative;
+    height: 500px;
+    font-size: 13px;
+    color: #111827;
+    font-variant-numeric: tabular-nums;
+}
+
+.mvt-boundary-labels span {
+    position: absolute;
+    transform: translateY(-50%);
+    right: 8px;
+    white-space: nowrap;
+}
+
+.mvt-boundary-labels .mvt-bottom-boundary {
+    transform: translateY(-100%);
+}
+
+.mvt-stack {
+    position: relative;
+    height: 500px;
+    border: 1.5px solid #444;
+    background: white;
+}
+
+.mvt-segment {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: #111827;
+    font-weight: 700;
+    font-size: 15px;
+    text-align: center;
+}
+
+.mvt-segment:last-child {
+    border-bottom: none;
+}
+
+.mvt-segment-label {
+    padding: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.algorithm-row select option {
-    background: var(--card-bg);
-    color: var(--text-color);
+.mvt-data-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-/* ── INPUT BOX ── */
-.input-box {
-    border: 1.5px solid var(--border);
-    border-radius: 0;
-    background: var(--card-bg);
-    padding: 12px;
+.mvt-status-panel {
+    border: 1px solid #ccc;
+    background: #fafafa;
+    padding: 16px;
+}
+
+.mvt-status-panel p {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: #555;
+}
+
+.mvt-status-panel p:last-child {
+    margin-bottom: 0;
+}
+
+/* Example memory blocks */
+.memory-block {
+    padding: 18px 8px;
+    text-align: center;
+    color: black;
+    font-weight: 700;
+    border: 1px solid #bbb;
+}
+
+.memory-used {
+    background: #bfdbfe;
+}
+
+.memory-free {
+    background: #e5e7eb;
+}
+
+/* RIGHT SIDE STATS */
+.stats-column {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    min-height: 0;
+    gap: 20px;
 }
 
-/* ── RIGHT PANEL ── */
-.right-panel {
-    flex: 1;
-    margin-left: 0;
-    background: var(--card-bg);
-    border: 1.5px solid var(--border);
-    border-radius: 0;
-    padding: 24px 24px 16px 24px;
-    min-height: 0;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
 }
 
-.placeholder-msg {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.stat-box {
+    border: 1px solid #ccc;
+    background: #fafafa;
+    padding: 18px;
     text-align: center;
 }
 
-.epic-title {
-  font-size: 2.3rem;
-  font-weight: 800;
-  color: #000000;
-  line-height: 1.4;
+.stat-box h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
 }
 
-.gradient-text {
-  background: linear-gradient(to right, #6366f1, #3b82f6, #06b6d4);
-  
-  -webkit-background-clip: text;
-  background-clip: text;
-  
-  -webkit-text-fill-color: transparent; 
-  color: transparent;
+.stat-box p {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--blue);
+}
+
+/* TABLE */
+.allocation-card {
+    border: 1px solid #ccc;
+    padding: 18px;
+    background: #fafafa;
+}
+
+.allocation-card h3 {
+    margin-top: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #e5e7eb;
+}
+
+/* WARNING */
+.fragmentation-warning {
+    padding: 15px;
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    color: #92400e;
+    font-weight: 600;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .output-layout {
+        flex-direction: column;
+    }
+
+    .memory-map-card {
+        width: 100%;
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 900px) {
+    .page-wrapper {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left-panel {
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mvt-time-snapshot {
+        flex-basis: 108px;
+    }
+
+    .mvt-column-shell {
+        grid-template-columns: 48px 56px;
+    }
+
+    #mvt-memory-map.mvt-timeline {
+        gap: 26px;
+    }
 }
